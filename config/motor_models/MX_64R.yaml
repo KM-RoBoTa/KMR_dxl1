@@ -2,8 +2,7 @@
 
 # https://stackoverflow.com/questions/62550215/parsing-yaml-file-using-yaml-cpp
 
-# Add access value? (R/W)
-# Add protocol?
+# Protocol 1
 
 
 # EEPROM
@@ -20,229 +19,155 @@ motor_data:
     address: 0
     length: 2
     unit: 1
-  - field: MODEL_INFO
-    address: 2
-    length: 4
-    unit: 1
   - field: FIRMWARE
-    address: 6
+    address: 2
     length: 1
     unit: 1
   - field: ID
-    address: 7
+    address: 3
     length: 1
     unit: 1
   - field: BAUDRATE
-    address: 8
+    address: 4
     length: 1
     unit: 1
   - field: RETURN_DELAY
-    address: 9
+    address: 5
     length: 1
     unit: 0.000002
-  - field: DRIVE_MODE
-    address: 10
+  - field: CW_ANGLE_LIMIT
+    address: 6
+    length: 2
+    unit: 0.001536
+  - field: CCW_ANGLE_LIMIT
+    address: 8
     length: 1
-    unit: 1
-  - field: OP_MODE
+    unit: 0.001536
+  - field: TEMP_LIMIT
     address: 11
     length: 1
     unit: 1
-  - field: SHADOW_ID
+  - field: MIN_VOLT_LIMIT
     address: 12
     length: 1
-    unit: 1
-  - field: PROTOCOL
+    unit: 0.1
+  - field: MAX_VOLT_LIMIT
     address: 13
     length: 1
-    unit: 1
-  - field: HOMING_OFFSET
-    address: 20
-    length: 4
-    unit: 0.001536
-  - field: MOVE_THRESHOLD
-    address: 24
-    length: 4
-    unit: 0.0240
-  - field: TEMP_LIMIT
-    address: 31
+    unit: 0.1
+  - field: MAX_TORQUE
+    address: 14
+    length: 2
+    unit: 0.1
+  - field: STATUS_RETURN
+    address: 16
     length: 1
     unit: 1
-  - field: MAX_VOLT_LIMIT
-    address: 32
-    length: 2
-    unit: 0.1
-  - field: MIN_VOLT_LIMIT
-    address: 34
-    length: 2
-    unit: 0.1
-  - field: PWM_LIMIT
-    address: 36
-    length: 2
-    unit: 0.113
-  - field: CURRENT_LIMIT
-    address: 38
-    length: 2
-    unit: 0.00336
-  - field: ACC_LIMIT
-    address: 40
-    length: 4
-    unit: 0.3745
-  - field: VEL_LIMIT
-    address: 44
-    length: 4
-    unit: 0.0240
-  - field: MAX_POS_LIMIT
-    address: 48
-    length: 4
-    unit: 0.001536
-  - field: MIN_POS_LIMIT
-    address: 52
-    length: 4
-    unit: 0.001536
+  - field: ALARM_LED
+    address: 17
+    length: 1
+    unit: 1
   - field: SHUTDOWN
-    address: 63
+    address: 18
     length: 1
     unit: 1
-  
+  - field: MULTITURN_OFFSET
+    address: 20
+    length: 2
+    unit: 1
+  - field: RES_DIVIDER
+    address: 22
+    length: 1
+    unit: 1
   
   # RAM
   - field: TRQ_ENABLE
-    address: 64
+    address: 24
     length: 1
     unit: 1
   - field: LED
-    address: 65
+    address: 25
     length: 1
     unit: 1
-  - field: STATUS_RETURN
-    address: 68
+  - field: D_GAIN
+    address: 26
+    length: 1
+    unit: 1
+  - field: I_GAIN
+    address: 27
+    length: 1
+    unit: 1
+  - field: P_GAIN
+    address: 28
+    length: 1
+    unit: 1
+  - field: GOAL_POS
+    address: 30
+    length: 2
+    unit: 0.001536
+  - field: MOVING_SPEED
+    address: 32
+    length: 2
+    unit: 0.0119
+  - field: TORQUE_LIMIT
+    address: 34
+    length: 2
+    unit: 0.1
+  - field: PRESENT_POS
+    address: 36
+    length: 2
+    unit: 0.001536
+  - field: PRESENT_SPEED
+    address: 38
+    length: 2
+    unit: 0.0115
+  - field: PRESENT_LOAD
+    address: 40
+    length: 2
+    unit: 0.1
+  - field: PRESENT_VOLT
+    address: 42
+    length: 1
+    unit: 0.1
+  - field: PRESENT_TEMP
+    address: 43
     length: 1
     unit: 1
   - field: REGISTERED
-    address: 69
+    address: 44
     length: 1
     unit: 1
-  - field: HARDWARE_ERROR
+  - field: MOVING
+    address: 46
+    length: 1
+    unit: 1
+  - field: LOCK
+    address: 47
+    length: 1
+    unit: 1
+  - field: PUNCH
+    address: 48
+    length: 2
+    unit: 1
+  - field: REALTIME_TICK
+    address: 50
+    length: 2
+    unit: 0.001
+  - field: CURRENT
+    address: 68
+    length: 2
+    unit: 0.0045
+  - field: TRQ_MODE_ENABLE
     address: 70
     length: 1
     unit: 1
-  - field: VEL_I_GAIN
-    address: 76
+  - field: GOAL_TORQUE
+    address: 71
     length: 2
-    unit: 1
-  - field: VEL_P_GAIN
-    address: 78
-    length: 2
-    unit: 1
-  - field: POS_D_GAIN
-    address: 80
-    length: 2
-    unit: 1
-  - field: POS_I_GAIN
-    address: 82
-    length: 2
-    unit: 1
-  - field: POS_P_GAIN
-    address: 84
-    length: 2
-    unit: 1
-  - field: FF_2ND_GAIN
-    address: 88
-    length: 2
-    unit: 1
-  - field: FF_1ST_GAIN
-    address: 90
-    length: 2
-    unit: 1
-  - field: BUS_WATCHDOG
-    address: 98
+    unit: 0.0045
+  - field: GOAL_ACC
+    address: 73
     length: 1
-    unit: 1
-  - field: GOAL_PWM
-    address: 100
-    length: 2
-    unit: 0.113
-  - field: GOAL_CURRENT
-    address: 102
-    length: 2
-    unit: 0.00336
-  - field: GOAL_VELOCITY
-    address: 104
-    length: 4
-    unit: 0.0240
-  - field: PROFILE_ACC
-    address: 108
-    length: 4
-    unit: 214.577
-  - field: PROFILE_VEL
-    address: 112
-    length: 4
-    unit: 0.0240
-  - field: GOAL_POS
-    address: 116
-    length: 4
-    unit: 0.001536
-  - field: REALTIME_TICK
-    address: 120
-    length: 2
-    unit: 0.001
-  - field: MOVING
-    address: 122
-    length: 1
-    unit: 1
-  - field: MOVING_STATUS
-    address: 123
-    length: 1
-    unit: 1
-  - field: PRESENT_PWM
-    address: 124
-    length: 2
-    unit: 0.113
-  - field: PRESENT_CURRENT
-    address: 126
-    length: 2
-    unit: 0.00336
-  - field: PRESENT_VEL
-    address: 128
-    length: 4
-    unit: 0.0240
-  - field: PRESENT_POS
-    address: 132
-    length: 4
-    unit: 0.001536
-  - field: VEL_TRAJECTORY
-    address: 136
-    length: 4
-    unit: 1
-  - field: POS_TRAJECTORY
-    address: 140
-    length: 4
-    unit: 1
-  - field: PRESENT_INPUT_VOLT
-    address: 144
-    length: 2
-    unit: 0.1
-  - field: PRESENT_TEMP
-    address: 146
-    length: 1
-    unit: 1
-  - field: INDIR_ADD_1
-    address: 168
-    length: 2
-    unit: 1
-  - field: INDIR_DATA_1
-    address: 224
-    length: 1
-    unit: 1
-  - field: INDIR_ADD_2
-    address: 578
-    length: 2
-    unit: 1
-  - field: INDIR_DATA_2
-    address: 634
-    length: 1
-    unit: 1
-
+    unit: 0.0175
 
 

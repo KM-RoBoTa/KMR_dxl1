@@ -224,10 +224,9 @@ Motor_models Hal::string2Motors_models(const string &str)
  */
 Fields Hal::string2Fields(const string &str)
 {
+    //EEPROM
     if (str == "MODEL_NBR")
         return MODEL_NBR;
-    else if (str == "MODEL_INFO")
-        return MODEL_INFO;
     else if (str == "FIRMWARE")
         return FIRMWARE;
     else if (str == "ID")
@@ -236,108 +235,73 @@ Fields Hal::string2Fields(const string &str)
         return BAUDRATE;
     else if (str == "RETURN_DELAY")
         return RETURN_DELAY;
-    else if (str == "DRIVE_MODE")
-        return DRIVE_MODE;
-    else if (str == "RETURN_DELAY")
-        return RETURN_DELAY;
-    else if (str == "OP_MODE")
-        return OP_MODE;
-    else if (str == "SHADOW_ID")
-        return SHADOW_ID;
-    else if (str == "PROTOCOL")
-        return PROTOCOL;
-    else if (str == "HOMING_OFFSET")
-        return HOMING_OFFSET;
-    else if (str == "MOVE_THRESHOLD")
-        return MOVE_THRESHOLD;
+    else if (str == "CW_ANGLE_LIMIT")
+        return CW_ANGLE_LIMIT;
+    else if (str == "CCW_ANGLE_LIMIT")
+        return CCW_ANGLE_LIMIT;
     else if (str == "TEMP_LIMIT")
         return TEMP_LIMIT;
-    else if (str == "MAX_VOLT_LIMIT")
-        return MAX_VOLT_LIMIT;
     else if (str == "MIN_VOLT_LIMIT")
         return MIN_VOLT_LIMIT;
-    else if (str == "PWM_LIMIT")
-        return PWM_LIMIT;
-    else if (str == "CURRENT_LIMIT")
-        return CURRENT_LIMIT;
-    else if (str == "ACC_LIMIT")
-        return ACC_LIMIT;
-    else if (str == "VEL_LIMIT")
-        return VEL_LIMIT;
-    else if (str == "MAX_POS_LIMIT")
-        return MAX_POS_LIMIT;
-    else if (str == "MIN_POS_LIMIT")
-        return MIN_POS_LIMIT;
+    else if (str == "MAX_VOLT_LIMIT")
+        return MAX_VOLT_LIMIT;
+    else if (str == "MAX_TORQUE")
+        return MAX_TORQUE;
+    else if (str == "STATUS_RETURN")
+        return STATUS_RETURN;
+    else if (str == "ALARM_LED")
+        return ALARM_LED;
     else if (str == "SHUTDOWN")
         return SHUTDOWN;
+    else if (str == "MULTITURN_OFFSET")
+        return MULTITURN_OFFSET;
+    else if (str == "RES_DIVIDER")
+        return RES_DIVIDER;
+    // RAM    
     else if (str == "TRQ_ENABLE")
         return TRQ_ENABLE;
     else if (str == "LED")
         return LED;
-    else if (str == "STATUS_RETURN")
-        return STATUS_RETURN;
-    else if (str == "REGISTERED")
-        return REGISTERED;
-    else if (str == "HARDWARE_ERROR")
-        return HARDWARE_ERROR;
-    else if (str == "VEL_I_GAIN")
-        return VEL_I_GAIN;
-    else if (str == "VEL_P_GAIN")
-        return VEL_P_GAIN;
-    else if (str == "POS_D_GAIN")
-        return POS_D_GAIN;
-    else if (str == "POS_I_GAIN")
-        return POS_I_GAIN;
-    else if (str == "POS_P_GAIN")
-        return POS_P_GAIN;
-    else if (str == "FF_2ND_GAIN")
-        return FF_2ND_GAIN;
-    else if (str == "FF_1ST_GAIN")
-        return FF_1ST_GAIN;
-    else if (str == "BUS_WATCHDOG")
-        return BUS_WATCHDOG;
-    else if (str == "GOAL_PWM")
-        return GOAL_PWM;
-    else if (str == "GOAL_CURRENT")
-        return GOAL_CURRENT;
-    else if (str == "GOAL_VELOCITY")
-        return GOAL_VELOCITY;
-    else if (str == "PROFILE_ACC")
-        return PROFILE_ACC;
-    else if (str == "PROFILE_VEL")
-        return PROFILE_VEL;
+    else if (str == "D_GAIN")
+        return D_GAIN;
+    else if (str == "I_GAIN")
+        return I_GAIN;
+    else if (str == "P_GAIN")
+        return P_GAIN;
     else if (str == "GOAL_POS")
         return GOAL_POS;
-    else if (str == "REALTIME_TICK")
-        return REALTIME_TICK;
-    else if (str == "MOVING")
-        return MOVING;
-    else if (str == "MOVING_STATUS")
-        return MOVING_STATUS;
-    else if (str == "PRESENT_PWM")
-        return PRESENT_PWM;
-    else if (str == "PRESENT_CURRENT")
-        return PRESENT_CURRENT;
-    else if (str == "PRESENT_VEL")
-        return PRESENT_VEL;
+    else if (str == "MOVING_SPEED")
+        return MOVING_SPEED;
+    else if (str == "TORQUE_LIMIT")
+        return TORQUE_LIMIT;
     else if (str == "PRESENT_POS")
         return PRESENT_POS;
-    else if (str == "VEL_TRAJECTORY")
-        return VEL_TRAJECTORY;
-    else if (str == "POS_TRAJECTORY")
-        return POS_TRAJECTORY;
-    else if (str == "PRESENT_INPUT_VOLT")
-        return PRESENT_INPUT_VOLT;
+    else if (str == "PRESENT_SPEED")
+        return PRESENT_SPEED;
+    else if (str == "PRESENT_LOAD")
+        return PRESENT_LOAD;
+    else if (str == "PRESENT_VOLT")
+        return PRESENT_VOLT;
     else if (str == "PRESENT_TEMP")
         return PRESENT_TEMP;
-    else if (str == "INDIR_ADD_1")
-        return INDIR_ADD_1;
-    else if (str == "INDIR_DATA_1")
-        return INDIR_DATA_1;
-    else if (str == "INDIR_ADD_2")
-        return INDIR_ADD_2;
-    else if (str == "INDIR_DATA_2")
-        return INDIR_DATA_2;
+    else if (str == "REGISTERED")
+        return REGISTERED;
+    else if (str == "MOVING")
+        return MOVING;
+    else if (str == "LOCK")
+        return LOCK;
+    else if (str == "PUNCH")
+        return PUNCH;
+    else if (str == "REALTIME_TICK")
+        return REALTIME_TICK;
+    else if (str == "CURRENT")
+        return CURRENT;
+    else if (str == "TRQ_MODE_ENABLE")
+        return TRQ_MODE_ENABLE;
+    else if (str == "GOAL_TORQUE")
+        return GOAL_TORQUE;
+    else if (str == "GOAL_ACC")
+        return GOAL_ACC;
     else
         return UNDEF_F;
 }
