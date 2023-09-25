@@ -1,0 +1,248 @@
+# https://emanual.robotis.com/docs/en/dxl/mx/mx-64-2/
+
+# https://stackoverflow.com/questions/62550215/parsing-yaml-file-using-yaml-cpp
+
+# Add access value? (R/W)
+# Add protocol?
+
+
+# EEPROM
+model_name: MX_64R    # !!!! The underscore instead of hyphen very important
+operating_modes:
+  - current_control: 0
+    velocity_control: 1
+    position_control: 3
+    multiturn_control: 4
+    current_based_position_control: 5
+    PWM_control: 16 
+motor_data: 
+  - field: MODEL_NBR
+    address: 0
+    length: 2
+    unit: 1
+  - field: MODEL_INFO
+    address: 2
+    length: 4
+    unit: 1
+  - field: FIRMWARE
+    address: 6
+    length: 1
+    unit: 1
+  - field: ID
+    address: 7
+    length: 1
+    unit: 1
+  - field: BAUDRATE
+    address: 8
+    length: 1
+    unit: 1
+  - field: RETURN_DELAY
+    address: 9
+    length: 1
+    unit: 0.000002
+  - field: DRIVE_MODE
+    address: 10
+    length: 1
+    unit: 1
+  - field: OP_MODE
+    address: 11
+    length: 1
+    unit: 1
+  - field: SHADOW_ID
+    address: 12
+    length: 1
+    unit: 1
+  - field: PROTOCOL
+    address: 13
+    length: 1
+    unit: 1
+  - field: HOMING_OFFSET
+    address: 20
+    length: 4
+    unit: 0.001536
+  - field: MOVE_THRESHOLD
+    address: 24
+    length: 4
+    unit: 0.0240
+  - field: TEMP_LIMIT
+    address: 31
+    length: 1
+    unit: 1
+  - field: MAX_VOLT_LIMIT
+    address: 32
+    length: 2
+    unit: 0.1
+  - field: MIN_VOLT_LIMIT
+    address: 34
+    length: 2
+    unit: 0.1
+  - field: PWM_LIMIT
+    address: 36
+    length: 2
+    unit: 0.113
+  - field: CURRENT_LIMIT
+    address: 38
+    length: 2
+    unit: 0.00336
+  - field: ACC_LIMIT
+    address: 40
+    length: 4
+    unit: 0.3745
+  - field: VEL_LIMIT
+    address: 44
+    length: 4
+    unit: 0.0240
+  - field: MAX_POS_LIMIT
+    address: 48
+    length: 4
+    unit: 0.001536
+  - field: MIN_POS_LIMIT
+    address: 52
+    length: 4
+    unit: 0.001536
+  - field: SHUTDOWN
+    address: 63
+    length: 1
+    unit: 1
+  
+  
+  # RAM
+  - field: TRQ_ENABLE
+    address: 64
+    length: 1
+    unit: 1
+  - field: LED
+    address: 65
+    length: 1
+    unit: 1
+  - field: STATUS_RETURN
+    address: 68
+    length: 1
+    unit: 1
+  - field: REGISTERED
+    address: 69
+    length: 1
+    unit: 1
+  - field: HARDWARE_ERROR
+    address: 70
+    length: 1
+    unit: 1
+  - field: VEL_I_GAIN
+    address: 76
+    length: 2
+    unit: 1
+  - field: VEL_P_GAIN
+    address: 78
+    length: 2
+    unit: 1
+  - field: POS_D_GAIN
+    address: 80
+    length: 2
+    unit: 1
+  - field: POS_I_GAIN
+    address: 82
+    length: 2
+    unit: 1
+  - field: POS_P_GAIN
+    address: 84
+    length: 2
+    unit: 1
+  - field: FF_2ND_GAIN
+    address: 88
+    length: 2
+    unit: 1
+  - field: FF_1ST_GAIN
+    address: 90
+    length: 2
+    unit: 1
+  - field: BUS_WATCHDOG
+    address: 98
+    length: 1
+    unit: 1
+  - field: GOAL_PWM
+    address: 100
+    length: 2
+    unit: 0.113
+  - field: GOAL_CURRENT
+    address: 102
+    length: 2
+    unit: 0.00336
+  - field: GOAL_VELOCITY
+    address: 104
+    length: 4
+    unit: 0.0240
+  - field: PROFILE_ACC
+    address: 108
+    length: 4
+    unit: 214.577
+  - field: PROFILE_VEL
+    address: 112
+    length: 4
+    unit: 0.0240
+  - field: GOAL_POS
+    address: 116
+    length: 4
+    unit: 0.001536
+  - field: REALTIME_TICK
+    address: 120
+    length: 2
+    unit: 0.001
+  - field: MOVING
+    address: 122
+    length: 1
+    unit: 1
+  - field: MOVING_STATUS
+    address: 123
+    length: 1
+    unit: 1
+  - field: PRESENT_PWM
+    address: 124
+    length: 2
+    unit: 0.113
+  - field: PRESENT_CURRENT
+    address: 126
+    length: 2
+    unit: 0.00336
+  - field: PRESENT_VEL
+    address: 128
+    length: 4
+    unit: 0.0240
+  - field: PRESENT_POS
+    address: 132
+    length: 4
+    unit: 0.001536
+  - field: VEL_TRAJECTORY
+    address: 136
+    length: 4
+    unit: 1
+  - field: POS_TRAJECTORY
+    address: 140
+    length: 4
+    unit: 1
+  - field: PRESENT_INPUT_VOLT
+    address: 144
+    length: 2
+    unit: 0.1
+  - field: PRESENT_TEMP
+    address: 146
+    length: 1
+    unit: 1
+  - field: INDIR_ADD_1
+    address: 168
+    length: 2
+    unit: 1
+  - field: INDIR_DATA_1
+    address: 224
+    length: 1
+    unit: 1
+  - field: INDIR_ADD_2
+    address: 578
+    length: 2
+    unit: 1
+  - field: INDIR_DATA_2
+    address: 634
+    length: 1
+    unit: 1
+
+
+
