@@ -31,40 +31,24 @@ namespace KMR::dxlP1
  * @param[in]   portHandler Object handling port communication
  * @param[in]   packetHandler Object handling packets
  * @param[in]   hal Previouly initialized Hal object
- * @param[in]   forceIndirect Boolean: 1 to force the reader to be indirect address
- *              (has no effect if at least 2 fields)
  */
-Reader::Reader(vector<Fields> list_fields, vector<int> ids, dynamixel::PortHandler *portHandler,
-                            dynamixel::PacketHandler *packetHandler, Hal hal, bool forceIndirect)
+Reader::Reader(Fields field, vector<int> ids, dynamixel::PortHandler *portHandler,
+                            dynamixel::PacketHandler *packetHandler, Hal hal)
 {
     portHandler_ = portHandler;
     packetHandler_ = packetHandler;
     m_hal = hal;
     m_ids = ids;
 
-    m_list_fields = list_fields;
+    m_field = field;
 
     getDataByteSize();
+    checkMotorCompatibility(field);
 
-    if (list_fields.size() == 1 && !forceIndirect) {
-        m_isIndirectHandler = false;
-        checkMotorCompatibility(list_fields[0]);
-    }
-
-    else {
-        m_isIndirectHandler = true;
-        checkMotorCompatibility(INDIR_DATA_1);
-        setIndirectAddresses();
-    }
-
-    m_groupSyncReader = new dynamixel::GroupSyncRead(portHandler_, packetHandler_, m_data_address, m_data_byte_size);
+    m_groupBulkReader = new dynamixel::GroupBulkRead(portHandler_, packetHandler_);
 
     // Create the table to save read data
-    m_dataFromMotor = new float *[m_ids.size()]; 
-    for (int i=0; i<m_ids.size(); i++)
-        m_dataFromMotor[i] = new float[m_list_fields.size()];
-
-    cout << "Dxl reader created!" << endl;
+    m_dataFromMotor = new float [m_ids.size()];                          
 
 }
 
@@ -87,7 +71,7 @@ Reader::~Reader()
  */
 void Reader::clearParam()
 {
-    m_groupSyncReader->clearParam();
+    m_groupBulkReader->clearParam();
 }
 
 /**
@@ -97,7 +81,7 @@ void Reader::clearParam()
  */
 bool Reader::addParam(uint8_t id)
 {
-    bool dxl_addparam_result = m_groupSyncReader->addParam(id);
+    bool dxl_addparam_result = m_groupBulkReader->addParam(id, m_data_address, m_data_byte_size);
     return dxl_addparam_result;
 }
 
@@ -110,20 +94,22 @@ void Reader::syncRead(vector<int> ids)
 {
     int dxl_comm_result = COMM_TX_FAIL;             // Communication result
     bool dxl_addparam_result = 0;
+    uint8_t id;
 
     clearParam();    
 
     // Add the input motors to the reading list
     for (int i=0; i<ids.size(); i++){
-        dxl_addparam_result = addParam(ids[i]);
+        id = (uint8_t)ids[i];
+        dxl_addparam_result = addParam(id);
         if (dxl_addparam_result != true) {
-            cout << "Adding parameters failed for ID = " << ids[i] << endl;
+            cout << "[KMR::dxlP1::Reader] Adding parameters failed for ID = " << ids[i] << endl;
             exit(1);
         }
     }
 
     // Read the motors' sensors
-    dxl_comm_result = m_groupSyncReader->txRxPacket();
+    dxl_comm_result = m_groupBulkReader->txRxPacket();
     if (dxl_comm_result != COMM_SUCCESS){
         cout << packetHandler_->getTxRxResult(dxl_comm_result) << endl;
         exit(1);
@@ -143,28 +129,16 @@ void Reader::checkReadSuccessful(vector<int> ids)
 {
     // Check if groupsyncread data of Dyanamixel is available
     bool dxl_getdata_result = false;
-    Fields field;
-    int field_idx = 0;
-    int field_length = 0;
-    uint8_t offset = 0;
+    Fields field = m_field;
 
-    for (int i=0; i<ids.size(); i++){
-        for (int j=0; j<m_list_fields.size(); j++){
-            field = m_list_fields[j];
-            getFieldPosition(field, field_idx, field_length);
+    for (int i=0; i<ids.size(); i++) {
+        dxl_getdata_result = m_groupBulkReader->isAvailable(ids[i], m_data_address, m_data_byte_size);
 
-            dxl_getdata_result = m_groupSyncReader->isAvailable(ids[i], m_data_address + offset, field_length);
-
-            if (dxl_getdata_result != true)
-            {
-                fprintf(stderr, "[ID:%03d] groupSyncRead getdata failed \n", ids[i]);
-                exit(1);
-            }
-
-            offset += field_length;
+        if (dxl_getdata_result != true)
+        {
+            fprintf(stderr, "[ID:%03d] groupSyncRead getdata failed \n", ids[i]);
+            exit(1);
         }
-
-        offset = 0;
     }
 }
 
@@ -172,54 +146,32 @@ void Reader::checkReadSuccessful(vector<int> ids)
 /**
  * @brief       The reading being successful, save the read data into the output matrix
  * @param[in]   ids List of motors whose fields have been successfully read
- * @todo Change the goto to a cleaner way
  * @retval      void
  */
 void Reader::populateOutputMatrix(vector<int> ids)
 {
-    Fields field;
-    int field_idx = 0;
-    int field_length = 0;
-    uint8_t offset = 0;
+    Fields field = m_field;
     int32_t paramData;
     float units, data;
-    int id = 0, row = 0, col = 0;
+    int id = 0, idx = 0;
 
-    for (int i=0; i<ids.size(); i++){
-        for (int j=0; j<m_list_fields.size(); j++){
-            field = m_list_fields[j];
-            id = ids[i];
+    for (int i=0; i<ids.size(); i++) {
+        id = ids[i];
+        units = m_hal.getControlParametersFromID(id, field).unit;
 
-            getFieldPosition(field, field_idx, field_length);
-            units = m_hal.getControlParametersFromID(id, field).unit;
+        paramData = m_groupBulkReader->getData(id, m_data_address, m_data_byte_size);
 
-            paramData = m_groupSyncReader->getData(id, m_data_address + offset, field_length);
-
-            // Transform data from parametrized value to SI units
-            if (field != GOAL_POS && field != PRESENT_POS &&
-                field != MIN_POS_LIMIT && field != MAX_POS_LIMIT &&
-                field != HOMING_OFFSET) {
-                data = paramData * units;        
-            }
-            else
-                data = position2Angle(paramData, id, units);
-
-            // Save the converted value into the output matrix
-            for (row=0; row<ids.size(); row++){
-                for(col=0; col<m_list_fields.size(); col++){
-                    if (ids[row] == id && m_list_fields[col] == field)
-                        goto fill_matrix;
-                }
-            }
-
-            fill_matrix:
-            m_dataFromMotor[row][col] = data;
-            
-            // Offset for the data address
-            offset += field_length;
+        // Transform data from parametrized value to SI units
+        if (field != GOAL_POS && field != PRESENT_POS &&
+            field != CW_ANGLE_LIMIT && field != CCW_ANGLE_LIMIT) {
+            data = paramData * units;        
         }
+        else
+            data = position2Angle(paramData, id, units);
 
-        offset = 0;
+        // Save the converted value into the output matrix
+        idx = getMotorIndexFromID(id);
+        m_dataFromMotor[idx] = data;
     }
 }
 
@@ -238,7 +190,7 @@ float Reader::position2Angle(int32_t position, int id, float units)
     int motor_idx = m_hal.getMotorsListIndexFromID(id);
     int model = m_hal.m_motors_list[motor_idx].scanned_model;
 
-    if (model == 1030 || model == 1000 || model == 311){
+    if (model == 1030 || model == 1000 || model == 310){
     	int Model_max_position = 4095;
         
         angle = ((float) position - Model_max_position/2) * units;

@@ -142,7 +142,6 @@ public:
     Motor_data_field getControlParametersFromID(int id, Fields field); 
     int getMotorsListIndexFromID(int id);
     Motor getMotorFromID(int id);
-    void addMotorOffsetFromID(int id, uint8_t data, std::string field_name);
     void updateResetStatus(int id, int status);
 };
 

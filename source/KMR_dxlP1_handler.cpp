@@ -37,8 +37,7 @@ namespace KMR::dxlP1
 
 
 /**
- * @brief       Check if the motors are compatible for a given field: same address for data storing. \n 
- *              For indirect handling, also find the first common address for every motor
+ * @brief       Check if the motors are compatible for a given field: same address for data storing
  * @param[in]   field Control field that the handler is taking care of
  * @retval      void
  */
@@ -47,7 +46,6 @@ void Handler::checkMotorCompatibility(Fields field)
     uint8_t address = -1;
     uint8_t address_prev = -1;
     int id = -1, id_prev = -1;
-    uint8_t biggest_data_offset = 0;
   
     for(int i=1; i<m_ids.size(); i++){
         id = m_ids[i];
@@ -59,61 +57,9 @@ void Handler::checkMotorCompatibility(Fields field)
             cout << "Motors " << id << " and " << id_prev << " have incompatible addresses!" << endl;
             exit(1);
         }
+    }                                                                                                                                                                                                                                                                                                                        
 
-        if (m_isIndirectHandler) {
-            if (m_hal.getMotorFromID(id).indir_data_offset > biggest_data_offset)
-                biggest_data_offset = m_hal.getMotorFromID(id).indir_data_offset;
-        }
-    }
-
-    m_data_address = address + biggest_data_offset;
-
-    // Now that we have the guarantee that all indirect data begin at the same address and we found the first 
-    // available common address for all motors for indirect handling, update their offset (already assigned memory)
-    if (m_isIndirectHandler) {
-        for (int i=0; i<m_ids.size();i++)
-            m_hal.addMotorOffsetFromID(m_ids[i], (uint8_t) (biggest_data_offset + m_data_byte_size), "indir_data_offset");
-    }
-
-}
-
-/**
- * @brief       Set the indirect addresses: link the direct field address to an indirect address
- * @retval      void
- */
-void Handler::setIndirectAddresses()
-{
-    Motor_data_field motor_field; 
-    uint8_t dxl_error = 0;  
-    int dxl_comm_result = COMM_TX_FAIL; 
-    uint8_t param_address_offset = 0;
-    int id;
-    uint8_t indir_address_start; 
-
-    for (int k=0; k<m_ids.size(); k++){
-        id = m_ids[k];
-        indir_address_start = m_hal.getControlParametersFromID(id, INDIR_ADD_1).address;
-
-        for (int i=0; i<m_list_fields.size(); i++){
-            motor_field = m_hal.getControlParametersFromID(id, m_list_fields.at(i));
-
-            for (int j=0; j<motor_field.length; j++) {
-
-                dxl_comm_result = packetHandler_->write2ByteTxRx(portHandler_, id, 
-                                                                indir_address_start + m_hal.getMotorFromID(id).indir_address_offset,
-                                                                motor_field.address + param_address_offset, 
-                                                                &dxl_error);
-                if (dxl_comm_result != COMM_SUCCESS)
-                    cout << packetHandler_->getTxRxResult(dxl_comm_result) << endl;
-
-                m_hal.addMotorOffsetFromID(id, INDIR_OFFSET, "indir_address_offset");
-                param_address_offset += PARAM_OFFSET;
-            }
-
-            param_address_offset = 0;
-
-        }
-    }
+    m_data_address = address;
 }
 
 
@@ -124,30 +70,21 @@ void Handler::setIndirectAddresses()
  */
 void Handler::getDataByteSize()
 {
-    Fields field;
     uint8_t length = 0, length_prev = 0;
+    Fields field = m_field;
+    
+    for (int j=1; j<m_ids.size(); j++){
+        length = m_hal.getControlParametersFromID(m_ids[j], field).length;
+        length_prev = m_hal.getControlParametersFromID(m_ids[j-1], field).length;       
 
-    m_field_indices = vector<int> (m_list_fields.size());
-    m_field_lengths = vector<int> (m_list_fields.size());
-
-    for (int i=0; i<m_list_fields.size(); i++){
-        field = m_list_fields[i];
-        
-        for (int j=1; j<m_ids.size(); j++){
-            length = m_hal.getControlParametersFromID(m_ids[j], field).length;
-            length_prev = m_hal.getControlParametersFromID(m_ids[j-1], field).length;       
-
-            if(length != length_prev){
-                cout << "Motors " << m_ids[j] << " and " << m_ids[j-1] << " have incompatible field lengths!" << endl;
-                exit(1);
-            }
+        if(length != length_prev){
+            cout << "Motors " << m_ids[j] << " and " << m_ids[j-1] << " have incompatible field lengths!" << endl;
+            exit(1);
         }
-
-        m_field_lengths[i] = length;
-        m_field_indices[i] = m_data_byte_size;
-        m_data_byte_size += length;
-
     }
+
+    m_data_byte_size += length;
+
 }
 
 /*
@@ -177,26 +114,12 @@ void Handler::checkIDvalidity(vector<int> ids)
  */
 void Handler::checkFieldValidity(Fields field)
 {
-    if ( find(m_list_fields.begin(), m_list_fields.end(), field) == m_list_fields.end() ) {
+    if (field != m_field) {
         cout << "Error: field " << field << " is not handled by this handler!" << endl;  
         exit(1);
     }
 }
 
-/**
- * @brief       Get the index for reading/writing a certain field in a m_data_byte_size array
- * @param[in]   field Query control field
- * @retval      Index of the field to be written/read
- */
-void Handler::getFieldPosition(Fields field, int& field_idx, int& field_length)
-{
-    for (int i=0; i<m_list_fields.size(); i++){
-        if (m_list_fields[i] == field){
-            field_idx = m_field_indices[i];
-            field_length = m_field_lengths[i];
-        }
-    }
-}
 
 /**
  * @brief       Get the index of a motor in the list of handled motors

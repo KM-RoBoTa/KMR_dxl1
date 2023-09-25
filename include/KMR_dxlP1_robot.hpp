@@ -36,7 +36,6 @@ class BaseRobot {
         Writer *m_motor_enabler;
         Writer *m_controlMode_setter;
 
-
         void init_comm(const char *port_name, int baudrate, float protocol_version);
         void check_comm();
         void setMultiturnControl_singleMotor(int id, Motor motor);

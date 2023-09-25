@@ -19,7 +19,7 @@
 #include <unistd.h>  // Provides sleep function for linux
 #include "KMR_dxlP1_robot.hpp"
 
-#define PROTOCOL_VERSION            2.0
+#define PROTOCOL_VERSION            1.0
 #define ENABLE                      1
 #define DISABLE                     0
 
@@ -46,8 +46,8 @@ BaseRobot::BaseRobot(vector<int> all_ids, const char *port_name, int baudrate, H
     init_comm(port_name, baudrate, PROTOCOL_VERSION);
 
     // 2 integrated handlers: motor enabling and mode setter
-    m_motor_enabler = new Writer(vector<Fields>{TRQ_ENABLE}, m_all_IDs, portHandler_, packetHandler_, m_hal, 0);
-    m_controlMode_setter = new Writer(vector<Fields>{OP_MODE}, m_all_IDs, portHandler_, packetHandler_, m_hal, 0);
+    m_motor_enabler = new Writer(TRQ_ENABLE, m_all_IDs, portHandler_, packetHandler_, m_hal);
+    //m_controlMode_setter = new Writer(vector<Fields>{OP_MODE}, m_all_IDs, portHandler_, packetHandler_, m_hal);
 
     // Ping each motor to validate the communication is working
     check_comm();
@@ -132,7 +132,7 @@ void BaseRobot::check_comm()
  */
 void BaseRobot::enableMotors()
 {
-    m_motor_enabler->addDataToWrite(vector<int>{ENABLE}, TRQ_ENABLE, m_all_IDs);
+    m_motor_enabler->addDataToWrite(vector<int>{ENABLE}, m_all_IDs);
     m_motor_enabler->syncWrite(m_all_IDs);
 }
 
@@ -143,7 +143,7 @@ void BaseRobot::enableMotors()
  */
 void BaseRobot::enableMotors(vector<int> ids)
 {
-    m_motor_enabler->addDataToWrite(vector<int>{ENABLE}, TRQ_ENABLE, ids);
+    m_motor_enabler->addDataToWrite(vector<int>{ENABLE}, ids);
     m_motor_enabler->syncWrite(ids);    
 }
 
@@ -153,7 +153,7 @@ void BaseRobot::enableMotors(vector<int> ids)
  */
 void BaseRobot::disableMotors()
 {
-    m_motor_enabler->addDataToWrite(vector<int>{DISABLE}, TRQ_ENABLE, m_all_IDs);
+    m_motor_enabler->addDataToWrite(vector<int>{DISABLE}, m_all_IDs);
     m_motor_enabler->syncWrite(m_all_IDs);
 }
 
@@ -164,7 +164,7 @@ void BaseRobot::disableMotors()
  */
 void BaseRobot::disableMotors(vector<int> ids)
 {
-    m_motor_enabler->addDataToWrite(vector<int>{DISABLE}, TRQ_ENABLE, ids);
+    m_motor_enabler->addDataToWrite(vector<int>{DISABLE}, ids);
     m_motor_enabler->syncWrite(ids);    
 }
 
@@ -173,56 +173,56 @@ void BaseRobot::disableMotors(vector<int> ids)
 ******************************************************************************
  *                Reset necessary motors in multiturn mode
  ****************************************************************************/
-/**
- * @brief       Set single motor to multiturn mode. Used for multiturn reset
- * @param[in]   id Motor id to get set to multiturn mode
- * @param[in]   motor Query motor 
- * @retval      void
- */
-void BaseRobot::setMultiturnControl_singleMotor(int id, Motor motor)
-{
-    m_controlMode_setter->addDataToWrite(vector<int>{motor.control_modes.multiturn_control}, OP_MODE, vector<int>{id});
-    m_controlMode_setter->syncWrite(vector<int>{id});
-}
+// /**
+//  * @brief       Set single motor to multiturn mode. Used for multiturn reset
+//  * @param[in]   id Motor id to get set to multiturn mode
+//  * @param[in]   motor Query motor 
+//  * @retval      void
+//  */
+// void BaseRobot::setMultiturnControl_singleMotor(int id, Motor motor)
+// {
+//     m_controlMode_setter->addDataToWrite(vector<int>{motor.control_modes.multiturn_control}, OP_MODE, vector<int>{id});
+//     m_controlMode_setter->syncWrite(vector<int>{id});
+// }
 
-/**
- * @brief       Set single motor to position control mode. Used for multiturn reset
- * @param[in]   id Motor id to get set to control position mode
- * @param[in]   motor Query motor 
- * @retval      void
- */
-void BaseRobot::setPositionControl_singleMotor(int id, Motor motor)
-{
-    int pos_control = motor.control_modes.position_control;
-    m_controlMode_setter->addDataToWrite(vector<int>{motor.control_modes.position_control}, OP_MODE, vector<int>{id});
-    m_controlMode_setter->syncWrite(vector<int>{id});
-}
+// /**
+//  * @brief       Set single motor to position control mode. Used for multiturn reset
+//  * @param[in]   id Motor id to get set to control position mode
+//  * @param[in]   motor Query motor 
+//  * @retval      void
+//  */
+// void BaseRobot::setPositionControl_singleMotor(int id, Motor motor)
+// {
+//     int pos_control = motor.control_modes.position_control;
+//     m_controlMode_setter->addDataToWrite(vector<int>{motor.control_modes.position_control}, OP_MODE, vector<int>{id});
+//     m_controlMode_setter->syncWrite(vector<int>{id});
+// }
 
 
-/**
- * @brief       Reset multiturn motors flagged as needing a reset.
- * @retval      void
- * @note        Make sure the motors had enough time to execute the goal position command before 
- *              calling this function. Failure to do so results in undefined behavior.
- */
-void BaseRobot::resetMultiturnMotors()
-{
-    Motor motor;
-    int id;
+// /**
+//  * @brief       Reset multiturn motors flagged as needing a reset.
+//  * @retval      void
+//  * @note        Make sure the motors had enough time to execute the goal position command before 
+//  *              calling this function. Failure to do so results in undefined behavior.
+//  */
+// void BaseRobot::resetMultiturnMotors()
+// {
+//     Motor motor;
+//     int id;
 
-    for(int i=0; i<m_all_IDs.size(); i++) {
-        id = m_all_IDs[i];
-        motor = m_hal.getMotorFromID(id);
-        if (motor.toReset) {
-            disableMotors(vector<int>{id});
-            setPositionControl_singleMotor(id, motor);
-            setMultiturnControl_singleMotor(id, motor);    
-            enableMotors(vector<int>{id});
+//     for(int i=0; i<m_all_IDs.size(); i++) {
+//         id = m_all_IDs[i];
+//         motor = m_hal.getMotorFromID(id);
+//         if (motor.toReset) {
+//             disableMotors(vector<int>{id});
+//             setPositionControl_singleMotor(id, motor);
+//             setMultiturnControl_singleMotor(id, motor);    
+//             enableMotors(vector<int>{id});
 
-            m_hal.updateResetStatus(id, 0);
-        }
-    }
-}
+//             m_hal.updateResetStatus(id, 0);
+//         }
+//     }
+// }
 
 
 }

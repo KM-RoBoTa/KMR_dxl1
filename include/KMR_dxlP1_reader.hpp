@@ -28,7 +28,7 @@ namespace KMR::dxlP1
 class Reader : public Handler
 {
 protected:
-	dynamixel::GroupSyncRead *m_groupSyncReader;
+	dynamixel::GroupBulkRead *m_groupBulkReader;
 
 	void clearParam();
 	bool addParam(uint8_t id);
@@ -37,13 +37,13 @@ protected:
 	float position2Angle(int32_t position, int id, float units);
 
 public:
-	float **m_dataFromMotor;  // Table holding the read values from motors
+	float *m_dataFromMotor;  // Table holding the read values from motors
 	int *motorIndices_dataFromMotor; // used? @todo
 	int *fieldIndices_dataFromMotor; // used? @todo
 
-	Reader(std::vector<Fields> list_fields, std::vector<int> ids,
+	Reader(Fields field, std::vector<int> ids,
 			dynamixel::PortHandler *portHandler,
-			dynamixel::PacketHandler *packetHandler, Hal hal, bool forceIndirect);
+			dynamixel::PacketHandler *packetHandler, Hal hal);
 	~Reader();
 	void syncRead(std::vector<int> ids);
 };

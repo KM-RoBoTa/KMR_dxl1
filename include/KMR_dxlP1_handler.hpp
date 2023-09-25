@@ -28,17 +28,14 @@ namespace KMR::dxlP1
  * @details		This class is not usable by itself, it is a non-specialized sketelon inherited
  * 				by the child classes Reader and Writer. \n
  * 				It contains functionalities to check the viability of sync readers/writers 
- * 				that will be defined in child classes (motor compatibility). \n 
- * 				It also takes care of setting indirect addresses should the Handler be indirect
+ * 				that will be defined in child classes (motor compatibility).
  */
 class Handler
 {
 public:
-	std::vector<int> m_ids;				// All IDs handled by this specific handler
-	bool m_isIndirectHandler;			// Boolean: 1 if the handler is indirect, 0 otherwise
-	std::vector<Fields> m_list_fields;	// All Fields hanlded by this specific handler
-	std::vector<int> m_field_indices;	// USED?
-	std::vector<int> m_field_lengths;	// Byte size list of fields in the Handler USED?
+	std::vector<int> m_ids;		// All IDs handled by this specific handler
+	Fields m_field;				// Field handled by this specific handler
+
 
 protected:
 	dynamixel::PacketHandler *packetHandler_;
@@ -48,11 +45,9 @@ protected:
 	uint8_t m_data_byte_size = 0;		// Total data byte size handled by the handler	
 
 	void checkMotorCompatibility(Fields field);
-	void setIndirectAddresses();
 	void getDataByteSize();
 	void checkIDvalidity(std::vector<int> ids);
 	void checkFieldValidity(Fields field);
-	void getFieldPosition(Fields field, int &field_idx, int &field_length);
 	int getMotorIndexFromID(int id);
 
 	// Methods that need to be implemented in child classes

@@ -30,22 +30,22 @@ class Writer : public Handler
 {
 private:
     dynamixel::GroupSyncWrite *m_groupSyncWriter;
-    uint8_t **m_dataParam; // Table containing all parametrized data to be sent next step
+    uint8_t *m_dataParam; // Table containing all parametrized data to be sent next step
 
     int angle2Position(float angle, int id);
     void bindParameter(int lower_bound, int upper_bound, int &param);
-    void populateDataParam(int32_t data, int motor_idx, int field_idx, int field_length);
+    void populateDataParam(int32_t data, int motor_idx, int field_length);
     void clearParam();
-    bool addParam(uint8_t id, uint8_t *data);
+    bool addParam(uint8_t id, uint8_t data);
     bool multiturnOverLimit(int position);
 
 
 public:
-    Writer(std::vector<Fields> list_fields, std::vector<int> ids, dynamixel::PortHandler *portHandler,
-            dynamixel::PacketHandler *packetHandler, Hal hal, bool forceIndirect);
+    Writer(Fields field, std::vector<int> ids, dynamixel::PortHandler *portHandler,
+            dynamixel::PacketHandler *packetHandler, Hal hal);
     ~Writer();
     template <typename T>
-    void addDataToWrite(std::vector<T> data, Fields field, std::vector<int> ids);
+    void addDataToWrite(std::vector<T> data, std::vector<int> ids);
     void syncWrite(std::vector<int> ids);
 };
 
@@ -60,14 +60,10 @@ public:
  * @retval      void
  */
 template <typename T>
-void Writer::addDataToWrite(std::vector<T> data, Fields field, std::vector<int> ids)
+void Writer::addDataToWrite(std::vector<T> data, std::vector<int> ids)
 {
-    int field_length;
-    int field_idx;
     checkIDvalidity(ids);
-    checkFieldValidity(field);
 
-    getFieldPosition(field, field_idx, field_length);
     T current_data;
     int param_data;
     float units;
@@ -77,7 +73,7 @@ void Writer::addDataToWrite(std::vector<T> data, Fields field, std::vector<int> 
     for (int i = 0; i < ids.size(); i++)
     {
         id = ids[i];
-        units = m_hal.getControlParametersFromID(id, field).unit;
+        units = m_hal.getControlParametersFromID(id, m_field).unit;
         motor_idx = getMotorIndexFromID(id);
 
         if (data.size() == 1)
@@ -86,18 +82,14 @@ void Writer::addDataToWrite(std::vector<T> data, Fields field, std::vector<int> 
             current_data = data[i];
 
         // Transform data into its parametrized form and write it into the parametrized data matrix
-        if (field != GOAL_POS && field != PRESENT_POS &&
-            field != MIN_POS_LIMIT && field != MAX_POS_LIMIT &&
-            field != HOMING_OFFSET)
-        {
+        if (m_field != GOAL_POS && m_field != PRESENT_POS &&
+            m_field != CW_ANGLE_LIMIT && m_field != CCW_ANGLE_LIMIT) {
             param_data = current_data / units;
         }
         else
             param_data = angle2Position(current_data, id);
 
-
-
-        populateDataParam(param_data, motor_idx, field_idx, field_length);
+        populateDataParam(param_data, motor_idx, m_data_byte_size);
     }
 
 }

@@ -490,29 +490,6 @@ Motor Hal::getMotorFromID(int id)
  ****************************************************************************/
 
 /**
- * @brief       Update the offsets to access empty indirect addresses for a given motor
- * @param[in]   id ID of the query motor
- * @param[in]   data_length Byte length of the data that was just assigned an indirect address
- * @param[in]   field_name Type of field that was just assigned an indirect address (address or data)
- * @retval      void
- */
-void Hal::addMotorOffsetFromID(int id, uint8_t data_length, std::string field_name)
-{
-    int motor_idx = getMotorsListIndexFromID(id);
-
-    if (field_name == "indir_address_offset"){
-        m_motors_list[motor_idx].indir_address_offset += data_length;
-    }
-    else if (field_name == "indir_data_offset")
-        m_motors_list[motor_idx].indir_data_offset += data_length;
-    else{
-        cout << "Cannot change that motor field!" << endl;
-        exit(1);
-    }
-
-}
-
-/**
  * @brief       Update a motor's "to reset" status in multiturn mode
  * @param[in]   id ID of the query motor
  * @param[in]   status Boolean: 1 if need to reset, 0 if not

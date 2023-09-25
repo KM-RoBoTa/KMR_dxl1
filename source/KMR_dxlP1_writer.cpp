@@ -35,39 +35,27 @@ namespace KMR::dxlP1
  * @param[in]   portHandler Object handling port communication
  * @param[in]   packetHandler Object handling packets
  * @param[in]   hal Previouly initialized Hal object
- * @param[in]   forceIndirect Boolean: 1 to force the writer to be indirect address
- *              (has no effect if at least 2 fields)
  */
-Writer::Writer(vector<Fields> list_fields, vector<int> ids, dynamixel::PortHandler *portHandler,
-                            dynamixel::PacketHandler *packetHandler, Hal hal, bool forceIndirect)
+Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandler,
+                            dynamixel::PacketHandler *packetHandler, Hal hal)
 {
     portHandler_ = portHandler;
     packetHandler_ = packetHandler;
     m_hal = hal;
     m_ids = ids;
-    m_list_fields = list_fields;
+    m_field = field;
 
     getDataByteSize();
-
-    if (list_fields.size() == 1 && !forceIndirect) {
-        m_isIndirectHandler = false;
-        checkMotorCompatibility(list_fields[0]);
-    }
-
-    else {
-        m_isIndirectHandler = true;
-        checkMotorCompatibility(INDIR_DATA_1);
-        setIndirectAddresses();
-    }
+    checkMotorCompatibility(field);
 
     m_groupSyncWriter = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, m_data_address, m_data_byte_size);
 
     // Create the table to save parametrized data (to be read or sent)
-    m_dataParam = new uint8_t *[m_ids.size()];
-    for (int i=0; i<m_ids.size(); i++)
-        m_dataParam[i] = new uint8_t[m_data_byte_size];
+    m_dataParam = new uint8_t [m_ids.size()];
 
-    cout << "DXL HANDLER created!" << endl;
+    cout << "DXL Writer created!" << endl;
+    cout << "Address: " << (int)m_data_address << endl;
+    cout << "Data byte size: " << (int)m_data_byte_size << endl;
 
 }
 
@@ -99,9 +87,9 @@ void Writer::clearParam()
  * @param[in]   data Parametrized data to be sent to the motor
  * @retval      bool: true if data-to-send added to the list successfully
  */
-bool Writer::addParam(uint8_t id, uint8_t* data)
+bool Writer::addParam(uint8_t id, uint8_t data)
 {
-    bool dxl_addparam_result = m_groupSyncWriter->addParam(id, data);
+    bool dxl_addparam_result = m_groupSyncWriter->addParam(id, &data);
     return dxl_addparam_result;
 }
 
@@ -125,7 +113,7 @@ void Writer::syncWrite(vector<int> ids)
         dxl_addparam_result = addParam((uint8_t) id, m_dataParam[motor_idx]);
 
         if (dxl_addparam_result != true) {
-            cout << "Adding parameters failed for ID = " << id << endl;
+            cout << "[KMR::dxlP1::Writer] Adding parameters failed for ID = " << id << endl;
             exit(1);
         }
     }
@@ -152,7 +140,7 @@ int Writer::angle2Position(float angle, int id)
     float units = m_hal.getControlParametersFromID(id, GOAL_POS).unit;
     Motor motor = m_hal.getMotorFromID(id);
 
-    if (model == 1030 || model == 1000 || model == 311){
+    if (model == 1030 || model == 1000 || model == 310){
     	int Model_max_position = 4095;
         int Model_min_position = 0;
 		position = angle/units + Model_max_position/2 + 0.5;
@@ -169,6 +157,7 @@ int Writer::angle2Position(float angle, int id)
         return (1);
     }
 
+    cout << "calculated goal position: " << (int)position << endl;
     return position;
 }
 
@@ -196,20 +185,20 @@ void Writer::bindParameter(int lower_bound, int upper_bound, int& param)
  * @param[in]   field_length Byte size of the data
  * @retval      void
  */
-void Writer::populateDataParam(int32_t data, int motor_idx, int field_idx, int field_length)
+void Writer::populateDataParam(int32_t data, int motor_idx, int field_length)
 {
     if (field_length == 4) {
-        m_dataParam[motor_idx][field_idx+0] = DXL_LOBYTE(DXL_LOWORD(data));
-        m_dataParam[motor_idx][field_idx+1] = DXL_HIBYTE(DXL_LOWORD(data));
-        m_dataParam[motor_idx][field_idx+2] = DXL_LOBYTE(DXL_HIWORD(data));
-        m_dataParam[motor_idx][field_idx+3] = DXL_HIBYTE(DXL_HIWORD(data));
+        m_dataParam[motor_idx] = DXL_LOBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx] = DXL_HIBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx] = DXL_LOBYTE(DXL_HIWORD(data));
+        m_dataParam[motor_idx] = DXL_HIBYTE(DXL_HIWORD(data));
     }
     else if (field_length == 2) {
-        m_dataParam[motor_idx][field_idx+0] = DXL_LOBYTE(DXL_LOWORD(data));
-        m_dataParam[motor_idx][field_idx+1] = DXL_HIBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx] = DXL_LOBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx] = DXL_HIBYTE(DXL_LOWORD(data));
     }
     else if (field_length == 1) {
-        m_dataParam[motor_idx][field_idx+0] = DXL_LOBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx] = DXL_LOBYTE(DXL_LOWORD(data));
     }
     else
         cout<< "Wrong number of parameters to populate the parametrized matrix!" <<endl;
