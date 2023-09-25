@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_robot.cpp
+ * @file            KMR_dxlP1_robot.cpp
  * @brief           Defines the BaseRobot class
  ******************************************************************************
  * @copyright
@@ -17,7 +17,7 @@
 
 
 #include <unistd.h>  // Provides sleep function for linux
-#include "KMR_dxl_robot.hpp"
+#include "KMR_dxlP1_robot.hpp"
 
 #define PROTOCOL_VERSION            2.0
 #define ENABLE                      1
@@ -26,7 +26,7 @@
 
 using namespace std;
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 

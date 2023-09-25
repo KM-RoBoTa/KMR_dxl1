@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_handler.hpp
- * @brief           Header for the KMR_dxl_handler.cpp file.
+ * @file            KMR_dxlP1_handler.hpp
+ * @brief           Header for the KMR_dxlP1_handler.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -12,14 +12,14 @@
  ******************************************************************************
  */
 
-#ifndef KMR_DXL_HANDLER_HPP
-#define KMR_DXL_HANDLER_HPP
+#ifndef KMR_DXLP1_HANDLER_HPP
+#define KMR_DXLP1_HANDLER_HPP
 
 #include "dynamixel_sdk/dynamixel_sdk.h"
-#include "KMR_dxl_hal.hpp"
+#include "KMR_dxlP1_hal.hpp"
 #include <cstdint>
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 

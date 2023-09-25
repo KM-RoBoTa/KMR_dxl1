@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_robot.hpp
- * @brief           Header for the KMR_dxl_robot.cpp file.
+ * @file            KMR_dxlP1_robot.hpp
+ * @brief           Header for the KMR_dxlP1_robot.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -12,13 +12,13 @@
  ******************************************************************************
  */
 
-#ifndef KMR_DXL_ROBOT_HPP
-#define KMR_DXL_ROBOT_HPP
+#ifndef KMR_DXLP1_ROBOT_HPP
+#define KMR_DXLP1_ROBOT_HPP
 
-#include "KMR_dxl_writer.hpp"
-#include "KMR_dxl_reader.hpp"
+#include "KMR_dxlP1_writer.hpp"
+#include "KMR_dxlP1_reader.hpp"
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 /**

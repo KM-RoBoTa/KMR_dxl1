@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_writer.hpp
- * @brief           Header for the KMR_dxl_writer.cpp file.
+ * @file            KMR_dxlP1_writer.hpp
+ * @brief           Header for the KMR_dxlP1_writer.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -12,13 +12,13 @@
  ******************************************************************************
  */
 
-#ifndef KMR_DXL_WRITER_HPP
-#define KMR_DXL_WRITER_HPP
+#ifndef KMR_DXLP1_WRITER_HPP
+#define KMR_DXLP1_WRITER_HPP
 
 #include <cstdint>
-#include "KMR_dxl_handler.hpp"
+#include "KMR_dxlP1_handler.hpp"
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 /**

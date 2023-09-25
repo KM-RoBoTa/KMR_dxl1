@@ -1,7 +1,7 @@
 /**
  *****************************************************************************
- * @file            KMR_dxl_hal.hpp
- * @brief           Header for KMR_dxl_hal.cpp file
+ * @file            KMR_dxlP1_hal.hpp
+ * @brief           Header for KMR_dxlP1_hal.cpp file
  *****************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -12,15 +12,15 @@
  *****************************************************************************
  */
 
-#ifndef KMR_DXL_HAL_HPP
-#define KMR_DXL_HAL_HPP
+#ifndef KMR_DXLP1_HAL_HPP
+#define KMR_DXLP1_HAL_HPP
 
 #include <string>
 #include <iostream>
 #include <cstdint>
 #include <vector>
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 /**

@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_writer.cpp
+ * @file            KMR_dxlP1_writer.cpp
  * @brief           Defines the Writer class
  ******************************************************************************
  * @copyright
@@ -12,7 +12,7 @@
  ******************************************************************************
  */
 
-#include "KMR_dxl_writer.hpp"
+#include "KMR_dxlP1_writer.hpp"
 #include <algorithm>
 #include <cstdint>
 
@@ -25,7 +25,7 @@ using std::vector;
 
 using namespace std;
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 /**

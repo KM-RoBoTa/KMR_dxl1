@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_handler.cpp
+ * @file            KMR_dxlP1_handler.cpp
  * @brief           Defines the Handler class
  ******************************************************************************
  * @copyright
@@ -12,7 +12,7 @@
  ******************************************************************************
  */
 
-#include "KMR_dxl_handler.hpp"
+#include "KMR_dxlP1_handler.hpp"
 #include <algorithm>
 #include <cstdint>
 
@@ -26,7 +26,7 @@ using std::endl;
 using std::vector;
 
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 

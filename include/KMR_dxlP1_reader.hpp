@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_reader.hpp
- * @brief           Header for the KMR_dxl_reader.cpp file.
+ * @file            KMR_dxlP1_reader.hpp
+ * @brief           Header for the KMR_dxlP1_reader.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -12,12 +12,12 @@
  ******************************************************************************
  */
 
-#ifndef KMR_DXL_READER_HPP
-#define KMR_DXL_READER_HPP
+#ifndef KMR_DXLP1_READER_HPP
+#define KMR_DXLP1_READER_HPP
 
-#include "KMR_dxl_handler.hpp"
+#include "KMR_dxlP1_handler.hpp"
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 /**

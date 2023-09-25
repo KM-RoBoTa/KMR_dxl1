@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_hal.cpp
+ * @file            KMR_dxlP1_hal.cpp
  * @brief           Defines the Hal class
  ******************************************************************************
  * @copyright
@@ -12,7 +12,7 @@
  ******************************************************************************
  */
 
-#include "KMR_dxl_hal.hpp"
+#include "KMR_dxlP1_hal.hpp"
 #include "yaml-cpp/yaml.h"
 #include <iostream>
 #include <cstdint>
@@ -31,10 +31,10 @@ namespace YAML
  * @retval      void
  */
 template <>
-struct convert<KMR::dxl::Data_node>
+struct convert<KMR::dxlP1::Data_node>
 {
 
-    static bool decode(const Node &node, KMR::dxl::Data_node &data_node)
+    static bool decode(const Node &node, KMR::dxlP1::Data_node &data_node)
     {
 
         data_node.field_name = node["field"].as<std::string>();
@@ -54,10 +54,10 @@ struct convert<KMR::dxl::Data_node>
  * @retval      void
  */
 template <>
-struct convert<KMR::dxl::Motor_node>
+struct convert<KMR::dxlP1::Motor_node>
 {
 
-    static bool decode(const Node &node, KMR::dxl::Motor_node &motor_node)
+    static bool decode(const Node &node, KMR::dxlP1::Motor_node &motor_node)
     {
         motor_node.id = node["ID"].as<int>();
         motor_node.model_name = node["model"].as<string>();
@@ -75,10 +75,10 @@ struct convert<KMR::dxl::Motor_node>
  * @retval      void
  */
 template <>
-struct convert<KMR::dxl::Control_modes>
+struct convert<KMR::dxlP1::Control_modes>
 {
 
-    static bool decode(const Node &node, KMR::dxl::Control_modes &control_modes)
+    static bool decode(const Node &node, KMR::dxlP1::Control_modes &control_modes)
     {
 
         control_modes.current_control = (uint8_t) node["current_control"].as<int>();
@@ -94,7 +94,7 @@ struct convert<KMR::dxl::Control_modes>
 
 }
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
     
 /**

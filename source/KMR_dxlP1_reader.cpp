@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_reader.cpp
+ * @file            KMR_dxlP1_reader.cpp
  * @brief           Defines the Reader class
  ******************************************************************************
  * @copyright
@@ -12,7 +12,7 @@
  ******************************************************************************
  */
 
-#include "KMR_dxl_reader.hpp"
+#include "KMR_dxlP1_reader.hpp"
 #include <algorithm>
 #include <cstdint>
 
@@ -21,7 +21,7 @@ using std::endl;
 using std::vector;
 
 
-namespace KMR::dxl
+namespace KMR::dxlP1
 {
 
 /**
