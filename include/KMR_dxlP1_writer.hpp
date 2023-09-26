@@ -36,7 +36,7 @@ private:
     void bindParameter(int lower_bound, int upper_bound, int &param);
     void populateDataParam(int32_t data, int motor_idx, int field_length);
     void clearParam();
-    bool addParam(uint8_t id, uint8_t data);
+    bool addParam(uint8_t id, uint8_t* data);
     bool multiturnOverLimit(int position);
 
 
