@@ -51,11 +51,11 @@ Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
     m_groupSyncWriter = new dynamixel::GroupSyncWrite(portHandler_, packetHandler_, m_data_address, m_data_byte_size);
 
     // Create the table to save parametrized data (to be read or sent)
-    m_dataParam = new uint8_t [m_data_byte_size];
+    m_dataParam = new uint8_t *[m_ids.size()];
+    for (int i=0; i<m_ids.size(); i++)
+        m_dataParam[i] = new uint8_t[m_data_byte_size];
 
-    cout << "DXL Writer created!" << endl;
-    cout << "Address: " << (int)m_data_address << endl;
-    cout << "Data byte size: " << (int)m_data_byte_size << endl;
+    //cout << "DXL Writer created!" << endl;
 
 }
 
@@ -110,7 +110,7 @@ void Writer::syncWrite(vector<int> ids)
         id = ids[i];
         motor_idx = getMotorIndexFromID(id);
 
-        dxl_addparam_result = addParam((uint8_t) id, m_dataParam);
+        dxl_addparam_result = addParam((uint8_t) id, m_dataParam[motor_idx]);
 
         if (dxl_addparam_result != true) {
             cout << "[KMR::dxlP1::Writer] Adding parameters failed for ID = " << id << endl;
@@ -139,6 +139,7 @@ int Writer::angle2Position(float angle, int id)
     int model = m_hal.m_motors_list[motor_idx].scanned_model;
     float units = m_hal.getControlParametersFromID(id, GOAL_POS).unit;
     Motor motor = m_hal.getMotorFromID(id);
+    int toReset = m_hal.m_motors_list[motor_idx].toReset;
 
     if (model == 1030 || model == 1000 || model == 310){
     	int Model_max_position = 4095;
@@ -150,6 +151,11 @@ int Writer::angle2Position(float angle, int id)
         else {
             if (multiturnOverLimit(position))
                 m_hal.updateResetStatus(id, 1);
+            // Force values (used for motor multiturn resetting)
+            else if (toReset == 1)  // Need to set to join control mode
+                position = 0;
+            else if (toReset == 2) // Need to set to multiturn control mode
+                position = 4095;
         }
     }
     else {
@@ -157,7 +163,6 @@ int Writer::angle2Position(float angle, int id)
         return (1);
     }
 
-    cout << "calculated goal position: " << (int)position << endl;
     return position;
 }
 
@@ -188,17 +193,17 @@ void Writer::bindParameter(int lower_bound, int upper_bound, int& param)
 void Writer::populateDataParam(int32_t data, int motor_idx, int field_length)
 {
     if (field_length == 4) {
-        m_dataParam[0] = DXL_LOBYTE(DXL_LOWORD(data));
-        m_dataParam[1] = DXL_HIBYTE(DXL_LOWORD(data));
-        m_dataParam[2] = DXL_LOBYTE(DXL_HIWORD(data));
-        m_dataParam[3] = DXL_HIBYTE(DXL_HIWORD(data));
+        m_dataParam[motor_idx][0] = DXL_LOBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx][1] = DXL_HIBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx][2] = DXL_LOBYTE(DXL_HIWORD(data));
+        m_dataParam[motor_idx][3] = DXL_HIBYTE(DXL_HIWORD(data));
     }
     else if (field_length == 2) {
-        m_dataParam[0] = DXL_LOBYTE(DXL_LOWORD(data));
-        m_dataParam[1] = DXL_HIBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx][0] = DXL_LOBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx][1] = DXL_HIBYTE(DXL_LOWORD(data));
     }
     else if (field_length == 1) {
-        m_dataParam[0] = DXL_LOBYTE(DXL_LOWORD(data));
+        m_dataParam[motor_idx][0] = DXL_LOBYTE(DXL_LOWORD(data));
     }
     else
         cout<< "Wrong number of parameters to populate the parametrized matrix!" <<endl;

@@ -16,6 +16,9 @@
 #include <algorithm>
 #include <cstdint>
 
+#define MAX_POS         28672
+#define UINT_OVERFLOW   65535
+
 using std::cout;
 using std::endl;
 using std::vector;
@@ -112,7 +115,7 @@ void Reader::syncRead(vector<int> ids)
     dxl_comm_result = m_groupBulkReader->txRxPacket();
     if (dxl_comm_result != COMM_SUCCESS){
         cout << packetHandler_->getTxRxResult(dxl_comm_result) << endl;
-        exit(1);
+        //exit(1);
     }
 
     checkReadSuccessful(ids);
@@ -137,7 +140,7 @@ void Reader::checkReadSuccessful(vector<int> ids)
         if (dxl_getdata_result != true)
         {
             fprintf(stderr, "[ID:%03d] groupSyncRead getdata failed \n", ids[i]);
-            exit(1);
+            //exit(1);
         }
     }
 }
@@ -151,7 +154,7 @@ void Reader::checkReadSuccessful(vector<int> ids)
 void Reader::populateOutputMatrix(vector<int> ids)
 {
     Fields field = m_field;
-    int32_t paramData;
+    uint32_t paramData;
     float units, data;
     int id = 0, idx = 0;
 
@@ -166,9 +169,13 @@ void Reader::populateOutputMatrix(vector<int> ids)
             field != CW_ANGLE_LIMIT && field != CCW_ANGLE_LIMIT) {
             data = paramData * units;        
         }
-        else
+        else {
+            // In multiturn mode, paramData overflows when position parameter < 0
+            if (paramData > MAX_POS)
+                paramData = paramData - UINT_OVERFLOW; 
             data = position2Angle(paramData, id, units);
-
+        }
+            
         // Save the converted value into the output matrix
         idx = getMotorIndexFromID(id);
         m_dataFromMotor[idx] = data;

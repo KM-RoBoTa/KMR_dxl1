@@ -34,12 +34,15 @@ class BaseRobot {
         dynamixel::PacketHandler *packetHandler_;
 
         Writer *m_motor_enabler;
-        Writer *m_controlMode_setter;
+        Writer *m_CW_limit;
+        Writer *m_CCW_limit;
+        Writer *m_torque_control;
 
         void init_comm(const char *port_name, int baudrate, float protocol_version);
         void check_comm();
-        void setMultiturnControl_singleMotor(int id, Motor motor);
-        void setPositionControl_singleMotor(int id, Motor motor);
+        void setMultiturnControl_singleMotor(int id);
+        void setPositionControl_singleMotor(int id);
+        void setTorqueControl_singleMotor(int id, int on_off);
 
         
     public:

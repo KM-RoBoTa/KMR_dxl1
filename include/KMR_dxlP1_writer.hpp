@@ -30,7 +30,7 @@ class Writer : public Handler
 {
 private:
     dynamixel::GroupSyncWrite *m_groupSyncWriter;
-    uint8_t *m_dataParam; // Table containing all parametrized data to be sent next step
+    uint8_t **m_dataParam; // Table containing all parametrized data to be sent next step
 
     int angle2Position(float angle, int id);
     void bindParameter(int lower_bound, int upper_bound, int &param);

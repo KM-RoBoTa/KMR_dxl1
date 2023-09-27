@@ -47,7 +47,9 @@ BaseRobot::BaseRobot(vector<int> all_ids, const char *port_name, int baudrate, H
 
     // 2 integrated handlers: motor enabling and mode setter
     m_motor_enabler = new Writer(TRQ_ENABLE, m_all_IDs, portHandler_, packetHandler_, m_hal);
-    //m_controlMode_setter = new Writer(vector<Fields>{OP_MODE}, m_all_IDs, portHandler_, packetHandler_, m_hal);
+    m_CW_limit = new Writer(CW_ANGLE_LIMIT, m_all_IDs, portHandler_, packetHandler_, m_hal);
+    m_CCW_limit = new Writer(CCW_ANGLE_LIMIT, m_all_IDs, portHandler_, packetHandler_, m_hal);
+    m_torque_control = new Writer(TRQ_MODE_ENABLE, m_all_IDs, portHandler_, packetHandler_, m_hal);
 
     // Ping each motor to validate the communication is working
     check_comm();
@@ -173,56 +175,92 @@ void BaseRobot::disableMotors(vector<int> ids)
 ******************************************************************************
  *                Reset necessary motors in multiturn mode
  ****************************************************************************/
-// /**
-//  * @brief       Set single motor to multiturn mode. Used for multiturn reset
-//  * @param[in]   id Motor id to get set to multiturn mode
-//  * @param[in]   motor Query motor 
-//  * @retval      void
-//  */
-// void BaseRobot::setMultiturnControl_singleMotor(int id, Motor motor)
-// {
-//     m_controlMode_setter->addDataToWrite(vector<int>{motor.control_modes.multiturn_control}, OP_MODE, vector<int>{id});
-//     m_controlMode_setter->syncWrite(vector<int>{id});
-// }
+/**
+ * @brief       Set single motor to multiturn mode. Used for multiturn reset
+ * @param[in]   id Motor id to get set to multiturn mode
+ * @retval      void
+ */
+void BaseRobot::setMultiturnControl_singleMotor(int id)
+{
+    m_CW_limit->addDataToWrite(vector<float>{0}, vector<int>{id});
+    m_CW_limit->syncWrite(vector<int>{id});
+}
 
-// /**
-//  * @brief       Set single motor to position control mode. Used for multiturn reset
-//  * @param[in]   id Motor id to get set to control position mode
-//  * @param[in]   motor Query motor 
-//  * @retval      void
-//  */
-// void BaseRobot::setPositionControl_singleMotor(int id, Motor motor)
-// {
-//     int pos_control = motor.control_modes.position_control;
-//     m_controlMode_setter->addDataToWrite(vector<int>{motor.control_modes.position_control}, OP_MODE, vector<int>{id});
-//     m_controlMode_setter->syncWrite(vector<int>{id});
-// }
+/**
+ * @brief       Set single motor to position control mode. Used for multiturn reset
+ * @param[in]   id Motor id to get set to control position mode
+ * @retval      void
+ */
+void BaseRobot::setPositionControl_singleMotor(int id)
+{
+    m_CW_limit->addDataToWrite(vector<float>{0}, vector<int>{id});
+    m_CW_limit->syncWrite(vector<int>{id});
+}
 
 
-// /**
-//  * @brief       Reset multiturn motors flagged as needing a reset.
-//  * @retval      void
-//  * @note        Make sure the motors had enough time to execute the goal position command before 
-//  *              calling this function. Failure to do so results in undefined behavior.
-//  */
-// void BaseRobot::resetMultiturnMotors()
-// {
-//     Motor motor;
-//     int id;
+/**
+ * @brief       Set single motor to torque control mode. Used for multiturn reset
+ * @param[in]   id Motor id to get set to multiturn mode
+ * @param[in]   on_off 1/0 for enable/disable torque control mode
+ * @retval      void
+ */
+void BaseRobot::setTorqueControl_singleMotor(int id, int on_off)
+{
+    m_torque_control->addDataToWrite(vector<int>{on_off}, vector<int>{id});
+    m_torque_control->syncWrite(vector<int>{id});
+}
 
-//     for(int i=0; i<m_all_IDs.size(); i++) {
-//         id = m_all_IDs[i];
-//         motor = m_hal.getMotorFromID(id);
-//         if (motor.toReset) {
-//             disableMotors(vector<int>{id});
-//             setPositionControl_singleMotor(id, motor);
-//             setMultiturnControl_singleMotor(id, motor);    
-//             enableMotors(vector<int>{id});
 
-//             m_hal.updateResetStatus(id, 0);
-//         }
-//     }
-// }
+/**
+ * @brief       Reset multiturn motors flagged as needing a reset.
+ * @retval      void
+ * @note        Make sure the motors had enough time to execute the goal position command before 
+ *              calling this function. Failure to do so results in undefined behavior.
+ */
+void BaseRobot::resetMultiturnMotors()
+{
+    Motor motor;
+    int id;
+    int reset_flag = 0;
+
+    for(int i=0; i<m_all_IDs.size(); i++) {
+        id = m_all_IDs[i];
+        motor = m_hal.getMotorFromID(id);
+        if (motor.toReset) {
+            reset_flag = 1;
+            break;
+        }
+    }
+
+    if (reset_flag) {
+        disableMotors();
+
+        for(int i=0; i<m_all_IDs.size(); i++) {
+            id = m_all_IDs[i];
+            motor = m_hal.getMotorFromID(id);
+            if (motor.toReset == 1) {
+                setPositionControl_singleMotor(id);
+                m_hal.updateResetStatus(id, 2);
+            }
+        }
+
+        // Need to enable the motors with the new control type for it to register
+        enableMotors();
+        disableMotors();
+
+        for(int i=0; i<m_all_IDs.size(); i++) {
+            id = m_all_IDs[i];
+            motor = m_hal.getMotorFromID(id);
+            if (motor.toReset == 2) {
+                setMultiturnControl_singleMotor(id);
+                m_hal.updateResetStatus(id, 0);
+            }
+        }
+        enableMotors();
+        
+        sleep(0.01);
+    }
+}
 
 
 }

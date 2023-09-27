@@ -109,7 +109,7 @@ Hal::Hal()
 
     m_controlModesPerModel = new Control_modes[NBR_MODELS];
 
-    cout << "[KMR::dxl] Hal created" << endl;
+    // cout << "[KMR::dxl] Hal created" << endl;
 }
 
 /**
@@ -141,7 +141,7 @@ vector<int> Hal::init(char *motor_config_file, char* path_to_KMR_dxl)
  */
 Hal::~Hal()
 {
-    cout << "[KMR::dxl] The Hal object is being deleted" << endl;
+    // cout << "[KMR::dxl] The Hal object is being deleted" << endl;
 }
 
 
