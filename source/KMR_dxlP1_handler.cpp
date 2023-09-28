@@ -59,6 +59,9 @@ void Handler::checkMotorCompatibility(Fields field)
         }
     }                                                                                                                                                                                                                                                                                                                        
 
+    if (m_ids.size() == 1)
+        address = m_hal.getControlParametersFromID(m_ids[0], field).address;
+
     m_data_address = address;
 }
 
@@ -82,6 +85,9 @@ void Handler::getDataByteSize()
             exit(1);
         }
     }
+
+    if (m_ids.size() == 1)
+        length = m_hal.getControlParametersFromID(m_ids[0], field).length;
 
     m_data_byte_size += length;
 

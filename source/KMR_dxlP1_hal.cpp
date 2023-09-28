@@ -109,7 +109,6 @@ Hal::Hal()
 
     m_controlModesPerModel = new Control_modes[NBR_MODELS];
 
-    // cout << "[KMR::dxl] Hal created" << endl;
 }
 
 /**
@@ -191,6 +190,7 @@ void Hal::populate_control_table(char* path_to_KMR_dxl)
             m_control_table[motor_model][col] = motor_data_field;
         }
     }
+
 }
 
 /*****************************************************************************

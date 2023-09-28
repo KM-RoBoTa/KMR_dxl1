@@ -55,8 +55,6 @@ Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
     for (int i=0; i<m_ids.size(); i++)
         m_dataParam[i] = new uint8_t[m_data_byte_size];
 
-    //cout << "DXL Writer created!" << endl;
-
 }
 
 /**
