@@ -1,7 +1,7 @@
 # Introduction {#mainpage}
 [TOC]
 
-This library provides an easy way to use Dynamixel motors in a project, in **protocol 2**. \n 
+This library provides an easy way to use Dynamixel motors in a project, in **protocol 1**. \n 
 Its main strength is the abstraction of adresses: the user does not need to concern themselves with manually getting or inputting
 addresses from the motors' control tables, this is done automatically by the library. Similarly, in case of a handler (reader or writer) needing
 to work through indirect addresses, the library automatically takes care of it. 

@@ -1,15 +1,15 @@
-# KMR_dxl
+# KMR_dxlP1
 
 Library for an easy use of Dynamixel motors.  
-It abstracts the hardware (no need to concern yourself with memory addresses) and automates the creation of reading/writing handlers (automatically assigns indirect address reading/writing).
+It abstracts the hardware (no need to concern yourself with memory addresses) and automates the creation of reading/writing handlers.
 
-It works with Dynamixel's **protocol 2**.
+It works with Dynamixel's **protocol 1**.
 
 Dependencies:
 - dynamixel API
 - yaml-cpp
 
-How to use: go to the KMR_dxl folder, then: 
+How to use: go to the KMR_dxlP1 folder, then: 
 ```bash
 mkdir build
 cd build
