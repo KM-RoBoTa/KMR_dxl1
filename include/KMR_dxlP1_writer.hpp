@@ -90,6 +90,7 @@ void Writer::addDataToWrite(std::vector<T> data, std::vector<int> ids)
             param_data = angle2Position(current_data, id);
 
         populateDataParam(param_data, motor_idx, m_data_byte_size);
+
     }
 
 }

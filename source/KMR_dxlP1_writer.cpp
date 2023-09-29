@@ -149,6 +149,8 @@ int Writer::angle2Position(float angle, int id)
         else {
             if (multiturnOverLimit(position))
                 m_hal.updateResetStatus(id, 1);
+
+
             // Force values (used for motor multiturn resetting)
             else if (toReset == 1)  // Need to set to join control mode
                 position = 0;
@@ -173,10 +175,12 @@ int Writer::angle2Position(float angle, int id)
  */
 void Writer::bindParameter(int lower_bound, int upper_bound, int& param)
 {
-    if (param > upper_bound)
+    if (param > upper_bound) 
         param = upper_bound;
+
     else if (param < lower_bound)
-        param = lower_bound;
+        param = lower_bound; 
+
 }
 
 

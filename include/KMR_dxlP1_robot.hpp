@@ -58,6 +58,7 @@ class BaseRobot {
         void disableMotors();
         void disableMotors(std::vector<int> ids);
         void resetMultiturnMotors();
+        void resetMultiturnMotors(int sleep_time_us);
 };
 
 }

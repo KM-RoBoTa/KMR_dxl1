@@ -212,12 +212,13 @@ void BaseRobot::setTorqueControl_singleMotor(int id, int on_off)
 
 
 /**
- * @brief       Reset multiturn motors flagged as needing a reset.
+ * @brief       Reset multiturn motors flagged as needing a reset, with input sleeping time.
+ * @param[in]   sleep_time_us Sleep time in microseconds after dis/enabling motors
  * @retval      void
  * @note        Make sure the motors had enough time to execute the goal position command before 
  *              calling this function. Failure to do so results in undefined behavior.
  */
-void BaseRobot::resetMultiturnMotors()
+void BaseRobot::resetMultiturnMotors(int sleep_time_us)
 {
     Motor motor;
     int id;
@@ -232,7 +233,7 @@ void BaseRobot::resetMultiturnMotors()
         }
     }
 
-    if (reset_flag) {
+    if (reset_flag == 1 || reset_flag == 2) {
         disableMotors();
 
         for(int i=0; i<m_all_IDs.size(); i++) {
@@ -245,7 +246,9 @@ void BaseRobot::resetMultiturnMotors()
         }
 
         // Need to enable the motors with the new control type for it to register
+        usleep(sleep_time_us);
         enableMotors();
+        usleep(sleep_time_us);
         disableMotors();
 
         for(int i=0; i<m_all_IDs.size(); i++) {
@@ -256,10 +259,23 @@ void BaseRobot::resetMultiturnMotors()
                 m_hal.updateResetStatus(id, 0);
             }
         }
+        usleep(sleep_time_us);
         enableMotors();
-        
-        sleep(0.01);
+        usleep(sleep_time_us);
     }
+}
+
+
+/**
+ * @brief       Reset multiturn motors flagged as needing a reset, using the default 1ms sleep time. \n 
+ *              Use the overloaded function to set a custom value as argument
+ * @retval      void
+ * @note        Make sure the motors had enough time to execute the goal position command before 
+ *              calling this function. Failure to do so results in undefined behavior.
+ */
+void BaseRobot::resetMultiturnMotors()
+{
+    resetMultiturnMotors(1000);
 }
 
 
