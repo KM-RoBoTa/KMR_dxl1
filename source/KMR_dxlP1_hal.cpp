@@ -115,6 +115,7 @@ Hal::Hal()
  * @brief       Initialize the hal: parse motor config file and create the control table. 
  *              To call immediately after the constructor   
  * @param[in]   motor_config_file Configuration file of the motors in the project
+ * @param[in]   path_to_KMR_dxl Path from the working directory (build) to this library's folder
  * @return      Vector of all motor IDs 
  */
 vector<int> Hal::init(char *motor_config_file, char* path_to_KMR_dxl)
@@ -190,7 +191,6 @@ void Hal::populate_control_table(char* path_to_KMR_dxl)
             m_control_table[motor_model][col] = motor_data_field;
         }
     }
-
 }
 
 /*****************************************************************************
@@ -207,6 +207,8 @@ Motor_models Hal::string2Motors_models(const string &str)
 {
     if (str == "MX_64R")
         return MX_64R;
+    else if (str == "AX_12A")
+        return AX_12A;
     else
         return UNDEF_M;
     /* else if(str == "TUESDAY") return TUESDAY;

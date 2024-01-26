@@ -49,7 +49,6 @@ BaseRobot::BaseRobot(vector<int> all_ids, const char *port_name, int baudrate, H
     m_motor_enabler = new Writer(TRQ_ENABLE, m_all_IDs, portHandler_, packetHandler_, m_hal);
     m_CW_limit = new Writer(CW_ANGLE_LIMIT, m_all_IDs, portHandler_, packetHandler_, m_hal);
     m_CCW_limit = new Writer(CCW_ANGLE_LIMIT, m_all_IDs, portHandler_, packetHandler_, m_hal);
-    m_torque_control = new Writer(TRQ_MODE_ENABLE, m_all_IDs, portHandler_, packetHandler_, m_hal);
 
     // Ping each motor to validate the communication is working
     check_comm();
@@ -121,6 +120,15 @@ void BaseRobot::check_comm()
             m_hal.m_motors_list[motor_idx].scanned_model = model_number; 
         }
     }
+}
+
+/**
+ * @brief       Set the IDs of all motors in multiturn mode    
+ * @param[in]   ids IDs of motors in multiturn
+ */
+void BaseRobot::setMultiturnIds(vector<int> ids)
+{
+    m_torque_control = new Writer(TRQ_MODE_ENABLE, ids, portHandler_, packetHandler_, m_hal);
 }
 
 /*

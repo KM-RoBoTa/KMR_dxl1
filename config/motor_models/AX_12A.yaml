@@ -1,4 +1,4 @@
-# https://emanual.robotis.com/docs/en/dxl/mx/mx-64-2/
+# https://emanual.robotis.com/docs/en/dxl/ax/ax-12a/
 
 # https://stackoverflow.com/questions/62550215/parsing-yaml-file-using-yaml-cpp
 
@@ -6,7 +6,7 @@
 
 
 # EEPROM
-model_name: MX_64R    # !!!! The underscore instead of hyphen very important
+model_name: AX_12A   # !!!! The underscore instead of hyphen very important
 operating_modes:
   - current_control: 0
     velocity_control: 1
@@ -38,11 +38,11 @@ motor_data:
   - field: CW_ANGLE_LIMIT
     address: 6
     length: 2
-    unit: 0.001536
+    unit: 0.005061
   - field: CCW_ANGLE_LIMIT
     address: 8
     length: 2
-    unit: 0.001536
+    unit: 0.005061
   - field: TEMP_LIMIT
     address: 11
     length: 1
@@ -71,14 +71,6 @@ motor_data:
     address: 18
     length: 1
     unit: 1
-  - field: MULTITURN_OFFSET
-    address: 20
-    length: 2
-    unit: 1
-  - field: RES_DIVIDER
-    address: 22
-    length: 1
-    unit: 1
   
   # RAM
   - field: TRQ_ENABLE
@@ -89,26 +81,14 @@ motor_data:
     address: 25
     length: 1
     unit: 1
-  - field: D_GAIN
-    address: 26
-    length: 1
-    unit: 1
-  - field: I_GAIN
-    address: 27
-    length: 1
-    unit: 1
-  - field: P_GAIN
-    address: 28
-    length: 1
-    unit: 1
   - field: GOAL_POS
     address: 30
     length: 2
-    unit: 0.001536
+    unit: 0.005061
   - field: MOVING_SPEED
     address: 32
     length: 2
-    unit: 0.0119
+    unit: 0.0116
   - field: TORQUE_LIMIT
     address: 34
     length: 2
@@ -116,11 +96,11 @@ motor_data:
   - field: PRESENT_POS
     address: 36
     length: 2
-    unit: 0.001536
+    unit: 0.005061
   - field: PRESENT_SPEED
     address: 38
     length: 2
-    unit: 0.0115
+    unit: 0.0116
   - field: PRESENT_LOAD
     address: 40
     length: 2
@@ -149,25 +129,4 @@ motor_data:
     address: 48
     length: 2
     unit: 1
-  - field: REALTIME_TICK
-    address: 50
-    length: 2
-    unit: 0.001
-  - field: CURRENT
-    address: 68
-    length: 2
-    unit: 0.0045
-  - field: TRQ_MODE_ENABLE
-    address: 70
-    length: 1
-    unit: 1
-  - field: GOAL_TORQUE
-    address: 71
-    length: 2
-    unit: 0.0045
-  - field: GOAL_ACC
-    address: 73
-    length: 1
-    unit: 0.0175
-
 

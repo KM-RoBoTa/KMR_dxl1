@@ -140,16 +140,15 @@ int Writer::angle2Position(float angle, int id)
     int toReset = m_hal.m_motors_list[motor_idx].toReset;
 
     if (model == 1030 || model == 1000 || model == 310){
-    	int Model_max_position = 4095;
-        int Model_min_position = 0;
-		position = angle/units + Model_max_position/2 + 0.5;
+    	int model_max_position = 4095;
+        int model_min_position = 0;
+		position = angle/units + model_max_position/2 + 0.5;
 
         if (!motor.multiturn)
-            bindParameter(Model_min_position, Model_max_position, position);
+            bindParameter(model_min_position, model_max_position, position);
         else {
             if (multiturnOverLimit(position))
                 m_hal.updateResetStatus(id, 1);
-
 
             // Force values (used for motor multiturn resetting)
             else if (toReset == 1)  // Need to set to join control mode
@@ -158,6 +157,13 @@ int Writer::angle2Position(float angle, int id)
                 position = 4095;
         }
     }
+    else if (model == 12) { // AX_12A
+        int model_max_position = 1023;
+        int model_min_position = 0;
+		position = angle/units + model_max_position/2 + 0.5;
+
+        bindParameter(model_min_position, model_max_position, position);
+    } 
     else {
         cout << "This model is unknown, cannot calculate position from angle!" << endl;
         return (1);

@@ -52,13 +52,15 @@ class BaseRobot {
 
         BaseRobot(std::vector<int> all_ids, const char *port_name, int baudrate, Hal hal);
         ~BaseRobot();
-       
+
+        void setMultiturnIds(std::vector<int> ids);
         void enableMotors();
         void enableMotors(std::vector<int> ids);
         void disableMotors();
         void disableMotors(std::vector<int> ids);
         void resetMultiturnMotors();
         void resetMultiturnMotors(int sleep_time_us);
+
 };
 
 }
