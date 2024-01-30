@@ -287,4 +287,93 @@ void BaseRobot::resetMultiturnMotors()
 }
 
 
+/*
+******************************************************************************
+ *                               EEPROM init writing
+ ****************************************************************************/
+
+/**
+ * @brief       Set the input motors to multiturn mode
+ * @param[in]   ids Motors to be set to multiturn mode
+ */
+void BaseRobot::setMultiturnMode(vector<int> ids)
+{
+    m_CW_limit->addParametersToWrite(vector<int>{4095}, ids);
+    m_CCW_limit->addParametersToWrite(vector<int>{4095}, ids);
+
+    m_CW_limit->syncWrite(ids);
+    m_CCW_limit->syncWrite(ids);
+}
+
+
+/**
+ * @brief       Set the minimum voltage of motors
+ * @param[in]   minVoltages Min. allowed voltages in motors
+ * @retval      void
+ */                                 
+void BaseRobot::setMinVoltage(vector<float> minVoltages)
+{
+    Writer* EEPROM_writer = new Writer(MIN_VOLT_LIMIT, 
+                                            m_all_IDs, portHandler_, packetHandler_, m_hal);
+
+    EEPROM_writer->addDataToWrite(minVoltages, m_all_IDs);
+    EEPROM_writer->syncWrite(m_all_IDs);
+}
+
+/**
+ * @brief       Set the maximum voltage of motors
+ * @param[in]   minVoltages Max. allowed voltages in motors
+ * @retval      void
+ */                                 
+void BaseRobot::setMaxVoltage(vector<float> maxVoltages)
+{
+    Writer* EEPROM_writer = new Writer(MAX_VOLT_LIMIT, 
+                                            m_all_IDs, portHandler_, packetHandler_, m_hal);
+
+    EEPROM_writer->addDataToWrite(maxVoltages, m_all_IDs);
+    EEPROM_writer->syncWrite(m_all_IDs);
+}
+
+/**
+ * @brief       Set the minimum position of motors
+ * @param[in]   minPositions Min. positions for motors (lower saturation) 
+ * @retval      void
+ */                                 
+void BaseRobot::setMinPosition(vector<float> minPositions)
+{
+    Writer* EEPROM_writer = new Writer(CW_ANGLE_LIMIT, 
+                                            m_all_IDs, portHandler_, packetHandler_, m_hal);
+
+    EEPROM_writer->addDataToWrite(minPositions, m_all_IDs);
+    EEPROM_writer->syncWrite(m_all_IDs);
+}
+
+/**
+ * @brief       Set the maximum position of motors
+ * @param[in]   maxPositions Max. positions for motors (upper saturation) 
+ * @retval      void
+ */                                 
+void BaseRobot::setMaxPosition(vector<float> maxPositions)
+{
+    Writer* EEPROM_writer = new Writer(CCW_ANGLE_LIMIT, 
+                                            m_all_IDs, portHandler_, packetHandler_, m_hal);
+
+    EEPROM_writer->addDataToWrite(maxPositions, m_all_IDs);
+    EEPROM_writer->syncWrite(m_all_IDs);
+}
+
+/**
+ * @brief   Set the return delay to all motors
+ * @retval  void
+ */
+void BaseRobot::setAllDelay(int val)
+{
+    Writer* EEPROM_writer = new Writer(RETURN_DELAY, 
+                                            m_all_IDs, portHandler_, packetHandler_, m_hal);
+
+    EEPROM_writer->addDataToWrite(vector<int>{val}, m_all_IDs);
+    EEPROM_writer->syncWrite(m_all_IDs);
+}
+
+
 }

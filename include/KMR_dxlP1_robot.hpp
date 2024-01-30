@@ -37,6 +37,7 @@ class BaseRobot {
         Writer *m_CW_limit;
         Writer *m_CCW_limit;
         Writer *m_torque_control;
+        Writer *EEPROM_writer;
 
         void init_comm(const char *port_name, int baudrate, float protocol_version);
         void check_comm();
@@ -60,6 +61,13 @@ class BaseRobot {
         void disableMotors(std::vector<int> ids);
         void resetMultiturnMotors();
         void resetMultiturnMotors(int sleep_time_us);
+
+        void setMaxPosition(std::vector<float> maxPositions);
+        void setMinPosition(std::vector<float> maxPositions);
+        void setMaxVoltage(std::vector<float> maxVoltages);
+        void setMinVoltage(std::vector<float> maxVoltages);       
+        void setMultiturnMode(std::vector<int> ids);
+        void setAllDelay(int val);   
 
 };
 

@@ -91,6 +91,39 @@ bool Writer::addParam(uint8_t id, uint8_t* data)
     return dxl_addparam_result;
 }
 
+
+/**
+ * @brief       Add directly -parameters- as data, to be sent later with syncWrite
+ * @param[in]   params Parameters to be sent to motors. \n
+ *              NB: If only one value is input, it will be sent to all input motors
+ * @param[in]   ids List of motors that will receive the data
+ */
+void Writer::addParametersToWrite(vector<int> params, std::vector<int> ids)
+{
+    checkIDvalidity(ids);
+
+    int param_data;
+    int id;
+    int motor_idx = 0;
+
+    for (int i = 0; i < ids.size(); i++)
+    {
+        id = ids[i];
+        motor_idx = getMotorIndexFromID(id);
+
+        if (params.size() == 1)
+            param_data = params[0];
+        else
+            param_data = params[i];
+
+        populateDataParam(param_data, motor_idx, m_data_byte_size);
+
+    }
+
+}
+
+
+
 /**
  * @brief       Send the previously prepared data with addDataToWrite to motors
  * @param[in]   ids List of motors who will receive data

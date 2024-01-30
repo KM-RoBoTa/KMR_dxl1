@@ -46,6 +46,7 @@ public:
     ~Writer();
     template <typename T>
     void addDataToWrite(std::vector<T> data, std::vector<int> ids);
+    void addParametersToWrite(std::vector<int> params, std::vector<int> ids);
     void syncWrite(std::vector<int> ids);
 };
 
@@ -94,6 +95,8 @@ void Writer::addDataToWrite(std::vector<T> data, std::vector<int> ids)
     }
 
 }
+
+
 
 }
 #endif
