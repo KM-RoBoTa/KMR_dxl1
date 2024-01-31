@@ -21,7 +21,7 @@ if (DOXYGEN_FOUND)
     message("Doxygen build started")
 
     # Note the option ALL which allows to build the docs together with the application
-    add_custom_target(docs ALL
+    add_custom_target(dxlP1_docs ALL
         COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../docs/generated_docs
         COMMENT "Generating API documentation with Doxygen"
