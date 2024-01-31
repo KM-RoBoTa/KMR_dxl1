@@ -304,12 +304,17 @@ void BaseRobot::setMultiturnMode(vector<int> ids)
     disableMotors();
 
     m_CW_limit->addParametersToWrite(vector<int>{4095}, ids);
-    m_CCW_limit->addParametersToWrite(vector<int>{4095}, ids);
-
     m_CW_limit->syncWrite(ids);
-    m_CCW_limit->syncWrite(ids);
 
      // Enable the motors for a bit for the previous settings the take effect
+    enableMotors();
+    usleep(1000);
+    disableMotors();   
+
+    m_CCW_limit->addParametersToWrite(vector<int>{4095}, ids);
+    m_CCW_limit->syncWrite(ids);
+
+    // Enable the motors for a bit for the previous settings the take effect
     enableMotors();
     usleep(1000);
     disableMotors();   
