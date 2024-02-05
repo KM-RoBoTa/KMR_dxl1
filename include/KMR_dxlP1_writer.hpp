@@ -38,7 +38,7 @@ private:
     void clearParam();
     bool addParam(uint8_t id, uint8_t* data);
     bool multiturnOverLimit(int position);
-
+    bool multiturnOverLimit(float angle);
 
 public:
     Writer(Fields field, std::vector<int> ids, dynamixel::PortHandler *portHandler,

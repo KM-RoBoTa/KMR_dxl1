@@ -15,6 +15,7 @@
 #include "KMR_dxlP1_writer.hpp"
 #include <algorithm>
 #include <cstdint>
+#include <math.h>
 
 #define MULTITURN_MAX   6144
 #define MULTITURN_MIN   -2048
@@ -180,7 +181,7 @@ int Writer::angle2Position(float angle, int id)
         if (!motor.multiturn)
             bindParameter(model_min_position, model_max_position, position);
         else {
-            if (multiturnOverLimit(position))
+            if (multiturnOverLimit(angle))
                 m_hal.updateResetStatus(id, 1);
 
             // Force values (used for motor multiturn resetting)
@@ -264,6 +265,19 @@ bool Writer::multiturnOverLimit(int position)
         return false;
 }
 
+
+/**
+ * @brief       Check if the goal angle will place the motor over a full turn
+ * @param[in]   angle Goal angle of a motor
+ * @retval      Boolean: 1 if over a full turn, 0 otherwise
+ */
+bool Writer::multiturnOverLimit(float angle)
+{
+    if (angle >= 2*M_PI || angle <= -2*M_PI)
+        return true;
+    else
+        return false;
+}
 
 
 }
