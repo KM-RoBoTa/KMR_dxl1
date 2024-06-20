@@ -122,6 +122,77 @@ void Reader::syncRead(vector<int> ids)
     populateOutputMatrix(ids);
 }
 
+/**
+ * @brief       Read the handled fields of input motors with the slow, basic read function
+ * @note        Should only be used to read positions for AX_12A motors, who cannot use syncRead
+ * @param[in]   ids List of motors whose fields will be read 
+ * @param[out]  output Vector that will handle the output readings 
+ * @retval      1 if read successful, 0 otherwise
+ */
+int Reader::read(vector<int> ids, vector<float>& output)
+{
+    int dxl_comm_result = COMM_TX_FAIL;             // Communication result
+    uint8_t dxl_error = 0;                          // Dynamixel error
+    float units, data;
+    Fields field = m_field;
+    uint32_t paramOutput32;
+
+    for (int i=0; i<ids.size(); i++) {
+
+        if(m_data_byte_size == 1) {
+            uint8_t outputParam = 0;
+            dxl_comm_result = packetHandler_->read1ByteTxRx(portHandler_, ids[i],
+                                        m_data_address, &outputParam, &dxl_error);
+            paramOutput32 = (uint32_t) outputParam;
+        }
+        else if(m_data_byte_size == 2) {
+            uint16_t outputParam = 0;
+            dxl_comm_result = packetHandler_->read2ByteTxRx(portHandler_, ids[i],
+                                        m_data_address, &outputParam, &dxl_error);
+            paramOutput32 = (uint32_t) outputParam;
+        }
+        else if(m_data_byte_size == 4) {
+            uint32_t outputParam = 0;
+            dxl_comm_result = packetHandler_->read4ByteTxRx(portHandler_, ids[i],
+                                        m_data_address, &outputParam, &dxl_error);
+            paramOutput32 = (uint32_t) outputParam;
+        }
+        else {
+            cout << "ERROR! Unknown byte size to read" << endl;
+            exit(1);
+        }
+
+        // Check the success of the read
+        if (dxl_comm_result != COMM_SUCCESS) {
+            cout << packetHandler_->getTxRxResult(dxl_comm_result) << endl;
+            return 0;
+        }
+        else if (dxl_error != 0) {
+            cout << packetHandler_->getRxPacketError(dxl_error) << endl;
+            return 0;
+        }
+
+        // Transform the parametrized value into SI
+        units = m_hal->getControlParametersFromID(ids[i], field).unit;
+
+        if (field != GOAL_POS && field != PRESENT_POS &&
+            field != CW_ANGLE_LIMIT && field != CCW_ANGLE_LIMIT) {
+            data = paramOutput32 * units;        
+        }
+        else {
+            // In multiturn mode, paramData overflows when position parameter < 0
+            if (paramOutput32 > MAX_POS)
+                paramOutput32 = paramOutput32 - UINT_OVERFLOW; 
+            data = position2Angle(paramOutput32, ids[i], units);
+        }
+            
+        // Save the converted value into the output vector
+        output[i] = data;
+    }
+
+    return 1;
+}
+
 
 /**
  * @brief       Check if read data from motors is available

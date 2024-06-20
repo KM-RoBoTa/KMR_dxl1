@@ -35,6 +35,7 @@ public:
 			dynamixel::PacketHandler *packetHandler, Hal* hal);
 	~Reader();
 	void syncRead(std::vector<int> ids);
+	int read(std::vector<int> ids, std::vector<float>& output);
 
 protected:
 	dynamixel::GroupBulkRead *m_groupBulkReader = nullptr;
