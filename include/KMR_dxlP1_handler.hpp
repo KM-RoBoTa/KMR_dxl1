@@ -38,8 +38,8 @@ public:
 
 
 protected:
-	dynamixel::PacketHandler *packetHandler_;
-	dynamixel::PortHandler *portHandler_;
+	dynamixel::PacketHandler *packetHandler_ = NULL;
+	dynamixel::PortHandler *portHandler_ = NULL;
 	Hal m_hal;
 	uint8_t m_data_address = -1;		// Address where the data is written/read
 	uint8_t m_data_byte_size = 0;		// Total data byte size handled by the handler	

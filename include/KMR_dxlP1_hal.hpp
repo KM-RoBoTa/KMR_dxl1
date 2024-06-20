@@ -115,6 +115,22 @@ enum Fields
  *              It also parses the project's motors configuration file.
  */
 class Hal {
+public:
+    int m_tot_nbr_motors;   // Number of motors used in the robot
+    Motor* m_motors_list = NULL;     // List containing all motors' info 
+    std::vector<int> m_all_IDs;  // All motor IDs in the robot
+    Motor_data_field** m_control_table = NULL;   // Table containing all Dynamixel control values for every model
+    Control_modes* m_controlModesPerModel = NULL; // List of control modes values for each Dxl model
+
+    Hal();
+    ~Hal();
+    std::vector<int> init(char* motor_config_file, char* path_to_KMR_dxl);
+    void get_ID_list_from_motors_list();
+    Motor_data_field getControlParametersFromID(int id, Fields field); 
+    int getMotorsListIndexFromID(int id);
+    Motor getMotorFromID(int id);
+    void updateResetStatus(int id, int status);
+    
 private:
     std::vector<std::string> m_unique_motor_models_list;   // List of unique motor models used in the robot
 
@@ -127,22 +143,6 @@ private:
     void update_unique_models_list(std::string motor_model_string);
     Motor_models getModelFromID(int id);
     void saveControlValuesToMotors();
-
-public:
-    int m_tot_nbr_motors;   // Number of motors used in the robot
-    Motor* m_motors_list;     // List containing all motors' info 
-    std::vector<int> m_all_IDs;  // All motor IDs in the robot
-    Motor_data_field** m_control_table;   // Table containing all Dynamixel control values for every model
-    Control_modes* m_controlModesPerModel; // List of control modes values for each Dxl model
-
-    Hal();
-    ~Hal();
-    std::vector<int> init(char* motor_config_file, char* path_to_KMR_dxl);
-    void get_ID_list_from_motors_list();
-    Motor_data_field getControlParametersFromID(int id, Fields field); 
-    int getMotorsListIndexFromID(int id);
-    Motor getMotorFromID(int id);
-    void updateResetStatus(int id, int status);
 };
 
 }

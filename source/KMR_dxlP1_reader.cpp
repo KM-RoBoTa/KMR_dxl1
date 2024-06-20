@@ -61,7 +61,11 @@ Reader::Reader(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
  */
 Reader::~Reader()
 {
-    //cout << "The Dxl Reader object is being deleted" << endl;
+    cout << "Reader destr called" << endl;
+
+    // Free the dynamically allocated memory to heap
+    delete m_groupBulkReader;
+    delete[] m_dataFromMotor;
 }
 
 /*
@@ -91,7 +95,6 @@ bool Reader::addParam(uint8_t id)
 /**
  * @brief       Read the handled fields of input motors
  * @param[in]   ids List of motors whose fields will be read 
- * @retval      void
  */
 void Reader::syncRead(vector<int> ids)
 {
@@ -126,7 +129,6 @@ void Reader::syncRead(vector<int> ids)
 /**
  * @brief       Check if read data from motors is available
  * @param[in]   ids List of motors whose fields have just been read
- * @retval      void
  */
 void Reader::checkReadSuccessful(vector<int> ids)
 {
@@ -149,7 +151,6 @@ void Reader::checkReadSuccessful(vector<int> ids)
 /**
  * @brief       The reading being successful, save the read data into the output matrix
  * @param[in]   ids List of motors whose fields have been successfully read
- * @retval      void
  */
 void Reader::populateOutputMatrix(vector<int> ids)
 {

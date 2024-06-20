@@ -29,46 +29,44 @@ namespace KMR::dxlP1
  *          application, as well as their respective reading/writing functions
  */
 class BaseRobot {
-    protected:
-        dynamixel::PortHandler   *portHandler_;
-        dynamixel::PacketHandler *packetHandler_;
+public:
+    int *scanned_motor_models = NULL;  // Dynamixel-defined model numbers of motors in the robot
+    Hal m_hal;  // to put private? @todo
+    std::vector<int> m_all_IDs; // All motor IDs in the robot
 
-        Writer *m_motor_enabler;
-        Writer *m_CW_limit;
-        Writer *m_CCW_limit;
-        Writer *m_torque_control;
-        Writer *EEPROM_writer;
+    BaseRobot(std::vector<int> all_ids, const char *port_name, int baudrate, Hal hal);
+    ~BaseRobot();
 
-        void init_comm(const char *port_name, int baudrate, float protocol_version);
-        void check_comm();
-        void setMultiturnControl_singleMotor(int id);
-        void setPositionControl_singleMotor(int id);
-        void setTorqueControl_singleMotor(int id, int on_off);
+    void setMultiturnIds(std::vector<int> ids);
+    void enableMotors();
+    void enableMotors(std::vector<int> ids);
+    void disableMotors();
+    void disableMotors(std::vector<int> ids);
+    void resetMultiturnMotors();
+    void resetMultiturnMotors(int sleep_time_us);
 
-        
-    public:
-        int *scanned_motor_models;  // Dynamixel-defined model numbers of motors in the robot
-        Hal m_hal;  // to put private? @todo
-        std::vector<int> m_all_IDs; // All motor IDs in the robot
+    void setMaxPosition(std::vector<float> maxPositions);
+    void setMinPosition(std::vector<float> maxPositions);
+    void setMaxVoltage(std::vector<float> maxVoltages);
+    void setMinVoltage(std::vector<float> maxVoltages);       
+    void setMultiturnMode(std::vector<int> ids);
+    void setAllDelay(int val);   
+    
+protected:
+    dynamixel::PortHandler   *portHandler_ = NULL;
+    dynamixel::PacketHandler *packetHandler_ = NULL;
 
-        BaseRobot(std::vector<int> all_ids, const char *port_name, int baudrate, Hal hal);
-        ~BaseRobot();
+    Writer *m_motor_enabler = NULL;
+    Writer *m_CW_limit = NULL;
+    Writer *m_CCW_limit = NULL;
+    Writer *m_torque_control = NULL;
+    Writer *m_EEPROM_writer = NULL;
 
-        void setMultiturnIds(std::vector<int> ids);
-        void enableMotors();
-        void enableMotors(std::vector<int> ids);
-        void disableMotors();
-        void disableMotors(std::vector<int> ids);
-        void resetMultiturnMotors();
-        void resetMultiturnMotors(int sleep_time_us);
-
-        void setMaxPosition(std::vector<float> maxPositions);
-        void setMinPosition(std::vector<float> maxPositions);
-        void setMaxVoltage(std::vector<float> maxVoltages);
-        void setMinVoltage(std::vector<float> maxVoltages);       
-        void setMultiturnMode(std::vector<int> ids);
-        void setAllDelay(int val);   
-
+    void init_comm(const char *port_name, int baudrate, float protocol_version);
+    void check_comm();
+    void setMultiturnControl_singleMotor(int id);
+    void setPositionControl_singleMotor(int id);
+    void setTorqueControl_singleMotor(int id, int on_off);
 };
 
 }

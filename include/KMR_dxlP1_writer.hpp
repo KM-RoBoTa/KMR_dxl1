@@ -28,18 +28,6 @@ namespace KMR::dxlP1
  */
 class Writer : public Handler
 {
-private:
-    dynamixel::GroupSyncWrite *m_groupSyncWriter;
-    uint8_t **m_dataParam; // Table containing all parametrized data to be sent next step
-
-    int angle2Position(float angle, int id);
-    void bindParameter(int lower_bound, int upper_bound, int &param);
-    void populateDataParam(int32_t data, int motor_idx, int field_length);
-    void clearParam();
-    bool addParam(uint8_t id, uint8_t* data);
-    bool multiturnOverLimit(int position);
-    bool multiturnOverLimit(float angle);
-
 public:
     Writer(Fields field, std::vector<int> ids, dynamixel::PortHandler *portHandler,
             dynamixel::PacketHandler *packetHandler, Hal hal);
@@ -48,6 +36,18 @@ public:
     void addDataToWrite(std::vector<T> data, std::vector<int> ids);
     void addParametersToWrite(std::vector<int> params, std::vector<int> ids);
     void syncWrite(std::vector<int> ids);
+
+private:
+    dynamixel::GroupSyncWrite *m_groupSyncWriter = NULL;
+    uint8_t **m_dataParam = NULL; // Table containing all parametrized data to be sent next step
+
+    int angle2Position(float angle, int id);
+    void bindParameter(int lower_bound, int upper_bound, int &param);
+    void populateDataParam(int32_t data, int motor_idx, int field_length);
+    void clearParam();
+    bool addParam(uint8_t id, uint8_t* data);
+    bool multiturnOverLimit(int position);
+    bool multiturnOverLimit(float angle);
 };
 
 // Templates need to be defined in hpp
@@ -58,7 +58,6 @@ public:
  *              NB: If only one value is input, it will be sent to all input motors
  * @param[in]   field Control field to receive the data
  * @param[in]   ids List of motors that will receive the data
- * @retval      void
  */
 template <typename T>
 void Writer::addDataToWrite(std::vector<T> data, std::vector<int> ids)

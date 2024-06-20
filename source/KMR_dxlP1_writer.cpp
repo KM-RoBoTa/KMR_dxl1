@@ -63,7 +63,14 @@ Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
  */
 Writer::~Writer()
 {
-    //cout << "The Dxl Writer object is being deleted" << endl;
+    cout << "Writer destr called" << endl;
+
+    // Free the dynamically allocated memory to heap
+    delete m_groupSyncWriter;
+    for (int i=0; i<m_ids.size(); i++)
+        delete[] m_dataParam[i];
+    delete[] m_dataParam;
+
 }
 
 
@@ -128,7 +135,6 @@ void Writer::addParametersToWrite(vector<int> params, std::vector<int> ids)
 /**
  * @brief       Send the previously prepared data with addDataToWrite to motors
  * @param[in]   ids List of motors who will receive data
- * @retval      void
  */
 void Writer::syncWrite(vector<int> ids)
 {
@@ -211,7 +217,6 @@ int Writer::angle2Position(float angle, int id)
  * @param[in]       lower_bound Min. value the input can take
  * @param[in]       upper_bound Max. value the input can take
  * @param[in/out]   param Input value to be saturated
- * @return          void
  */
 void Writer::bindParameter(int lower_bound, int upper_bound, int& param)
 {
@@ -230,7 +235,6 @@ void Writer::bindParameter(int lower_bound, int upper_bound, int& param)
  * @param[in]   motor_idx Index of the motor
  * @param[in]   field_idx Index of the field (type of data)
  * @param[in]   field_length Byte size of the data
- * @retval      void
  */
 void Writer::populateDataParam(int32_t data, int motor_idx, int field_length)
 {
