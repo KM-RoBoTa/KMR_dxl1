@@ -37,7 +37,7 @@ namespace KMR::dxlP1
  * @param[in]   baudrate Baudrate of the port handling communication with motors
  * @param[in]   hal Previously initialized Hal object
  */
-BaseRobot::BaseRobot(vector<int> all_ids, const char *port_name, int baudrate, Hal hal)
+BaseRobot::BaseRobot(vector<int> all_ids, const char *port_name, int baudrate, Hal* hal)
 {
     m_hal = hal;
     m_all_IDs = all_ids;
@@ -52,17 +52,13 @@ BaseRobot::BaseRobot(vector<int> all_ids, const char *port_name, int baudrate, H
 
     // Ping each motor to validate the communication is working
     check_comm();
-
 }
-
 
 /**
  * @brief Destructor
  */
 BaseRobot::~BaseRobot()
 {
-    cout << "BaseRobot destr called" << endl;
-
     // Free the dynamically allocated memory to heap
     delete m_motor_enabler;
     delete m_CW_limit;
@@ -121,8 +117,8 @@ void BaseRobot::check_comm()
         }
         else {
             cout << "id: " << id << ", model number : " << model_number << endl;
-            motor_idx = m_hal.getMotorsListIndexFromID(id);
-            m_hal.m_motors_list[motor_idx].scanned_model = model_number; 
+            motor_idx = m_hal->getMotorsListIndexFromID(id);
+            m_hal->m_motors_list[motor_idx].scanned_model = model_number; 
         }
     }
 }
@@ -231,7 +227,7 @@ void BaseRobot::resetMultiturnMotors(int sleep_time_us)
 
     for(int i=0; i<m_all_IDs.size(); i++) {
         id = m_all_IDs[i];
-        motor = m_hal.getMotorFromID(id);
+        motor = m_hal->getMotorFromID(id);
         if (motor.toReset) {
             reset_flag = 1;
             break;
@@ -243,10 +239,10 @@ void BaseRobot::resetMultiturnMotors(int sleep_time_us)
 
         for(int i=0; i<m_all_IDs.size(); i++) {
             id = m_all_IDs[i];
-            motor = m_hal.getMotorFromID(id);
+            motor = m_hal->getMotorFromID(id);
             if (motor.toReset == 1) {
                 setPositionControl_singleMotor(id);
-                m_hal.updateResetStatus(id, 2);
+                m_hal->updateResetStatus(id, 2);
             }
         }
 
@@ -258,10 +254,10 @@ void BaseRobot::resetMultiturnMotors(int sleep_time_us)
 
         for(int i=0; i<m_all_IDs.size(); i++) {
             id = m_all_IDs[i];
-            motor = m_hal.getMotorFromID(id);
+            motor = m_hal->getMotorFromID(id);
             if (motor.toReset == 2) {
                 setMultiturnControl_singleMotor(id);
-                m_hal.updateResetStatus(id, 0);
+                m_hal->updateResetStatus(id, 0);
             }
         }
         usleep(sleep_time_us);
@@ -328,10 +324,11 @@ void BaseRobot::setMinVoltage(vector<float> minVoltages)
 
     m_EEPROM_writer->addDataToWrite(minVoltages, m_all_IDs);
     m_EEPROM_writer->syncWrite(m_all_IDs);
+    usleep(30*1000);
 
     // Free the memory
     delete m_EEPROM_writer;
-    m_EEPROM_writer = NULL;
+    m_EEPROM_writer = nullptr;
 }
 
 /**
@@ -345,10 +342,11 @@ void BaseRobot::setMaxVoltage(vector<float> maxVoltages)
 
     m_EEPROM_writer->addDataToWrite(maxVoltages, m_all_IDs);
     m_EEPROM_writer->syncWrite(m_all_IDs);
+    usleep(30*1000);
 
     // Free the memory
     delete m_EEPROM_writer;
-    m_EEPROM_writer = NULL;
+    m_EEPROM_writer = nullptr;
 }
 
 /**
@@ -362,10 +360,11 @@ void BaseRobot::setMinPosition(vector<float> minPositions)
 
     m_EEPROM_writer->addDataToWrite(minPositions, m_all_IDs);
     m_EEPROM_writer->syncWrite(m_all_IDs);
+    usleep(30*1000);
 
     // Free the memory
     delete m_EEPROM_writer;
-    m_EEPROM_writer = NULL;
+    m_EEPROM_writer = nullptr;
 }
 
 /**
@@ -379,10 +378,11 @@ void BaseRobot::setMaxPosition(vector<float> maxPositions)
 
     m_EEPROM_writer->addDataToWrite(maxPositions, m_all_IDs);
     m_EEPROM_writer->syncWrite(m_all_IDs);
+    usleep(30*1000);
 
     // Free the memory
     delete m_EEPROM_writer;
-    m_EEPROM_writer = NULL;   
+    m_EEPROM_writer = nullptr;   
 }
 
 /**
@@ -395,10 +395,11 @@ void BaseRobot::setAllDelay(int val)
 
     m_EEPROM_writer->addDataToWrite(vector<int>{val}, m_all_IDs);
     m_EEPROM_writer->syncWrite(m_all_IDs);
+    usleep(30*1000);
 
     // Free the memory
     delete m_EEPROM_writer;
-    m_EEPROM_writer = NULL;   
+    m_EEPROM_writer = nullptr;   
 }
 
 

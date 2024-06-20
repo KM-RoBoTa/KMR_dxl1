@@ -36,11 +36,10 @@ public:
 	std::vector<int> m_ids;		// All IDs handled by this specific handler
 	Fields m_field;				// Field handled by this specific handler
 
-
 protected:
 	dynamixel::PacketHandler *packetHandler_ = NULL;
 	dynamixel::PortHandler *portHandler_ = NULL;
-	Hal m_hal;
+	Hal* m_hal;
 	uint8_t m_data_address = -1;		// Address where the data is written/read
 	uint8_t m_data_byte_size = 0;		// Total data byte size handled by the handler	
 

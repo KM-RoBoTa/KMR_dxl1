@@ -28,16 +28,16 @@ namespace KMR::dxlP1
 class Reader : public Handler
 {
 public:
-	float *m_dataFromMotor = NULL;  // Table holding the read values from motors
+	float *m_dataFromMotor = nullptr;  // Table holding the read values from motors
 
 	Reader(Fields field, std::vector<int> ids,
 			dynamixel::PortHandler *portHandler,
-			dynamixel::PacketHandler *packetHandler, Hal hal);
+			dynamixel::PacketHandler *packetHandler, Hal* hal);
 	~Reader();
 	void syncRead(std::vector<int> ids);
 
 protected:
-	dynamixel::GroupBulkRead *m_groupBulkReader = NULL;
+	dynamixel::GroupBulkRead *m_groupBulkReader = nullptr;
 
 	void clearParam();
 	bool addParam(uint8_t id);

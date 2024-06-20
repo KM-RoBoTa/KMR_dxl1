@@ -49,8 +49,8 @@ void Handler::checkMotorCompatibility(Fields field)
     for(int i=1; i<m_ids.size(); i++){
         id = m_ids[i];
         id_prev = m_ids[i-1];
-        address = m_hal.getControlParametersFromID(id, field).address;
-        address_prev = m_hal.getControlParametersFromID(id_prev, field).address;
+        address = m_hal->getControlParametersFromID(id, field).address;
+        address_prev = m_hal->getControlParametersFromID(id_prev, field).address;
 
         if(address != address_prev){
             cout << "Motors " << id << " and " << id_prev << " have incompatible addresses!" << endl;
@@ -59,7 +59,7 @@ void Handler::checkMotorCompatibility(Fields field)
     }                                                                                                                                                                                                                                                                                                                        
 
     if (m_ids.size() == 1)
-        address = m_hal.getControlParametersFromID(m_ids[0], field).address;
+        address = m_hal->getControlParametersFromID(m_ids[0], field).address;
 
     m_data_address = address;
 }
@@ -75,8 +75,8 @@ void Handler::getDataByteSize()
     Fields field = m_field;
     
     for (int j=1; j<m_ids.size(); j++){
-        length = m_hal.getControlParametersFromID(m_ids[j], field).length;
-        length_prev = m_hal.getControlParametersFromID(m_ids[j-1], field).length;       
+        length = m_hal->getControlParametersFromID(m_ids[j], field).length;
+        length_prev = m_hal->getControlParametersFromID(m_ids[j-1], field).length;       
 
         if(length != length_prev){
             cout << "Motors " << m_ids[j] << " and " << m_ids[j-1] << " have incompatible field lengths!" << endl;
@@ -85,7 +85,7 @@ void Handler::getDataByteSize()
     }
 
     if (m_ids.size() == 1)
-        length = m_hal.getControlParametersFromID(m_ids[0], field).length;
+        length = m_hal->getControlParametersFromID(m_ids[0], field).length;
 
     m_data_byte_size += length;
 

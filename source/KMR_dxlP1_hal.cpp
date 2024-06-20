@@ -105,7 +105,6 @@ Hal::Hal()
         m_control_table[i] = new Motor_data_field[NBR_FIELDS];
 
     m_controlModesPerModel = new Control_modes[NBR_MODELS];
-
 }
 
 /**
@@ -138,8 +137,6 @@ vector<int> Hal::init(char *motor_config_file, char* path_to_KMR_dxl)
  */
 Hal::~Hal()
 {
-    cout << "Hal destr called" << endl;
-
     // Free the dynamically allocated memory to heap
     for (int i=0; i<NBR_MODELS; i++)
         delete[] m_control_table[i];

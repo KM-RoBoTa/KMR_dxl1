@@ -5,7 +5,7 @@ project(KMR_dxlP1)
 set(CMAKE_CXX_STANDARD 20)
 
 # Source files
-add_library(KMR_dxlP1 
+add_library(${PROJECT_NAME} 
             source/KMR_dxlP1_robot.cpp
             source/KMR_dxlP1_handler.cpp
             source/KMR_dxlP1_reader.cpp
@@ -13,13 +13,13 @@ add_library(KMR_dxlP1
             source/KMR_dxlP1_hal.cpp)
 
 # Directories containing header files
-target_include_directories(KMR_dxlP1 PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 # Locations of the used libraries
-target_link_directories(KMR_dxlP1 PUBLIC /usr/local/lib)
+target_link_directories(${PROJECT_NAME} PUBLIC /usr/local/lib)
 
 # Link the used libraries: dynamixel and yaml-cpp
-target_link_libraries(KMR_dxlP1 yaml-cpp)
+target_link_libraries(${PROJECT_NAME} yaml-cpp)
 
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "x86_64")
     message(STATUS "Processor used: " ${CMAKE_SYSTEM_PROCESSOR})

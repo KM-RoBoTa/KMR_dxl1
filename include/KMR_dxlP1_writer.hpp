@@ -30,7 +30,7 @@ class Writer : public Handler
 {
 public:
     Writer(Fields field, std::vector<int> ids, dynamixel::PortHandler *portHandler,
-            dynamixel::PacketHandler *packetHandler, Hal hal);
+            dynamixel::PacketHandler *packetHandler, Hal* hal);
     ~Writer();
     template <typename T>
     void addDataToWrite(std::vector<T> data, std::vector<int> ids);
@@ -38,8 +38,8 @@ public:
     void syncWrite(std::vector<int> ids);
 
 private:
-    dynamixel::GroupSyncWrite *m_groupSyncWriter = NULL;
-    uint8_t **m_dataParam = NULL; // Table containing all parametrized data to be sent next step
+    dynamixel::GroupSyncWrite *m_groupSyncWriter = nullptr;
+    uint8_t **m_dataParam = nullptr; // Table containing all parametrized data to be sent next step
 
     int angle2Position(float angle, int id);
     void bindParameter(int lower_bound, int upper_bound, int &param);
@@ -73,7 +73,7 @@ void Writer::addDataToWrite(std::vector<T> data, std::vector<int> ids)
     for (int i = 0; i < ids.size(); i++)
     {
         id = ids[i];
-        units = m_hal.getControlParametersFromID(id, m_field).unit;
+        units = m_hal->getControlParametersFromID(id, m_field).unit;
         motor_idx = getMotorIndexFromID(id);
 
         if (data.size() == 1)

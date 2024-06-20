@@ -36,7 +36,7 @@ namespace KMR::dxlP1
  * @param[in]   hal Previouly initialized Hal object
  */
 Reader::Reader(Fields field, vector<int> ids, dynamixel::PortHandler *portHandler,
-                            dynamixel::PacketHandler *packetHandler, Hal hal)
+                            dynamixel::PacketHandler *packetHandler, Hal* hal)
 {
     portHandler_ = portHandler;
     packetHandler_ = packetHandler;
@@ -51,8 +51,7 @@ Reader::Reader(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
     m_groupBulkReader = new dynamixel::GroupBulkRead(portHandler_, packetHandler_);
 
     // Create the table to save read data
-    m_dataFromMotor = new float [m_ids.size()];                          
-
+    m_dataFromMotor = new float [m_ids.size()];                     
 }
 
 
@@ -61,8 +60,6 @@ Reader::Reader(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
  */
 Reader::~Reader()
 {
-    cout << "Reader destr called" << endl;
-
     // Free the dynamically allocated memory to heap
     delete m_groupBulkReader;
     delete[] m_dataFromMotor;
@@ -161,7 +158,7 @@ void Reader::populateOutputMatrix(vector<int> ids)
 
     for (int i=0; i<ids.size(); i++) {
         id = ids[i];
-        units = m_hal.getControlParametersFromID(id, field).unit;
+        units = m_hal->getControlParametersFromID(id, field).unit;
 
         paramData = m_groupBulkReader->getData(id, m_data_address, m_data_byte_size);
 
@@ -195,8 +192,8 @@ float Reader::position2Angle(int32_t position, int id, float units)
 {
     float angle;
 
-    int motor_idx = m_hal.getMotorsListIndexFromID(id);
-    int model = m_hal.m_motors_list[motor_idx].scanned_model;
+    int motor_idx = m_hal->getMotorsListIndexFromID(id);
+    int model = m_hal->m_motors_list[motor_idx].scanned_model;
     int model_max_position;
 
     if (model == 1030 || model == 1000 || model == 310){

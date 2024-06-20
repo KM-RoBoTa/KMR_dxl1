@@ -30,11 +30,11 @@ namespace KMR::dxlP1
  */
 class BaseRobot {
 public:
-    int *scanned_motor_models = NULL;  // Dynamixel-defined model numbers of motors in the robot
-    Hal m_hal;  // to put private? @todo
+    int *scanned_motor_models = nullptr;  // Dynamixel-defined model numbers of motors in the robot
+    Hal* m_hal;  // to put private? @todo
     std::vector<int> m_all_IDs; // All motor IDs in the robot
 
-    BaseRobot(std::vector<int> all_ids, const char *port_name, int baudrate, Hal hal);
+    BaseRobot(std::vector<int> all_ids, const char *port_name, int baudrate, Hal* hal);
     ~BaseRobot();
 
     void setMultiturnIds(std::vector<int> ids);
@@ -53,14 +53,14 @@ public:
     void setAllDelay(int val);   
     
 protected:
-    dynamixel::PortHandler   *portHandler_ = NULL;
-    dynamixel::PacketHandler *packetHandler_ = NULL;
+    dynamixel::PortHandler   *portHandler_ = nullptr;
+    dynamixel::PacketHandler *packetHandler_ = nullptr;
 
-    Writer *m_motor_enabler = NULL;
-    Writer *m_CW_limit = NULL;
-    Writer *m_CCW_limit = NULL;
-    Writer *m_torque_control = NULL;
-    Writer *m_EEPROM_writer = NULL;
+    Writer *m_motor_enabler = nullptr;
+    Writer *m_CW_limit = nullptr;
+    Writer *m_CCW_limit = nullptr;
+    Writer *m_torque_control = nullptr;
+    Writer *m_EEPROM_writer = nullptr;
 
     void init_comm(const char *port_name, int baudrate, float protocol_version);
     void check_comm();

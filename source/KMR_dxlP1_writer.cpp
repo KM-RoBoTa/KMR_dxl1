@@ -38,7 +38,7 @@ namespace KMR::dxlP1
  * @param[in]   hal Previouly initialized Hal object
  */
 Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandler,
-                            dynamixel::PacketHandler *packetHandler, Hal hal)
+                            dynamixel::PacketHandler *packetHandler, Hal* hal)
 {
     portHandler_ = portHandler;
     packetHandler_ = packetHandler;
@@ -55,7 +55,6 @@ Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
     m_dataParam = new uint8_t *[m_ids.size()];
     for (int i=0; i<m_ids.size(); i++)
         m_dataParam[i] = new uint8_t[m_data_byte_size];
-
 }
 
 /**
@@ -63,14 +62,11 @@ Writer::Writer(Fields field, vector<int> ids, dynamixel::PortHandler *portHandle
  */
 Writer::~Writer()
 {
-    cout << "Writer destr called" << endl;
-
     // Free the dynamically allocated memory to heap
     delete m_groupSyncWriter;
     for (int i=0; i<m_ids.size(); i++)
         delete[] m_dataParam[i];
     delete[] m_dataParam;
-
 }
 
 
@@ -173,11 +169,11 @@ void Writer::syncWrite(vector<int> ids)
 int Writer::angle2Position(float angle, int id)
 {
 	int position = 2048;
-    int motor_idx = m_hal.getMotorsListIndexFromID(id);
-    int model = m_hal.m_motors_list[motor_idx].scanned_model;
-    float units = m_hal.getControlParametersFromID(id, GOAL_POS).unit;
-    Motor motor = m_hal.getMotorFromID(id);
-    int toReset = m_hal.m_motors_list[motor_idx].toReset;
+    int motor_idx = m_hal->getMotorsListIndexFromID(id);
+    int model = m_hal->m_motors_list[motor_idx].scanned_model;
+    float units = m_hal->getControlParametersFromID(id, GOAL_POS).unit;
+    Motor motor = m_hal->getMotorFromID(id);
+    int toReset = m_hal->m_motors_list[motor_idx].toReset;
 
     if (model == 1030 || model == 1000 || model == 310){
     	int model_max_position = 4095;
@@ -188,7 +184,7 @@ int Writer::angle2Position(float angle, int id)
             bindParameter(model_min_position, model_max_position, position);
         else {
             if (multiturnOverLimit(angle))
-                m_hal.updateResetStatus(id, 1);
+                m_hal->updateResetStatus(id, 1);
 
             // Force values (used for motor multiturn resetting)
             else if (toReset == 1)  // Need to set to join control mode
