@@ -167,10 +167,16 @@ int Reader::read(vector<int> ids, vector<float>& output)
             cout << packetHandler_->getTxRxResult(dxl_comm_result) << endl;
             return 0;
         }
-        else if (dxl_error != 0) {
-            cout << packetHandler_->getRxPacketError(dxl_error) << endl;
-            return 0;
-        }
+
+        // For some reason, the error "Input voltage error" is constantly reported, 
+        // despite the readings being successful.
+        // The next part is thus uncommented, hopefully only temporarily until 
+        // we find where the issue lies
+
+        //else if (dxl_error != 0) {
+        //    cout << packetHandler_->getRxPacketError(dxl_error) << endl;
+        //    return 0;
+        //}
 
         // Transform the parametrized value into SI
         units = m_hal->getControlParametersFromID(ids[i], field).unit;
